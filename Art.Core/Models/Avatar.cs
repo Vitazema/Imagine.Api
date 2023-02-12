@@ -1,4 +1,4 @@
-﻿namespace Art.Domain.Models;
+﻿namespace Art.Core.Models;
 
 public class Avatar
 {

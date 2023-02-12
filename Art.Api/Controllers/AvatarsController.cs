@@ -1,5 +1,6 @@
-﻿using Art.Data;
-using Art.Domain.Models;
+﻿using Art.Core.Models;
+using Art.Data;
+using Art.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ public class AvatarsController : ControllerBase
     {
         _context = context;
     }
+
     [HttpGet]
     public async Task<ActionResult<List<Avatar>>> GetAvatars()
     {
