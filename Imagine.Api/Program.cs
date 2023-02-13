@@ -1,5 +1,5 @@
-using Art.Data;
-using Art.Infrastructure;
+using Imagine.Core.Contracts;
+using Imagine.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,14 +11,31 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ArtDbContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IArtRepository, ArtRepository>();
 
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+try
+{
+    var context = scope.ServiceProvider.GetRequiredService<ArtDbContext>();
+    await context.Database.MigrateAsync();
+    await ArtDbContextSeed.SeedAsync(context, loggerFactory);
+}
+catch (Exception e)
+{
+    var logger = loggerFactory.CreateLogger<Program>();
+    logger.LogError(e, "An error occured during migration");
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 

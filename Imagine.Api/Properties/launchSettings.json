@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "NftArt.Api": {
+    "Imagine.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,

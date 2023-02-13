@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Art.Api", "Art.Api\Art.Api.csproj", "{A7E06593-6203-48D1-B2DB-A233FF5263AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Api", "Imagine.Api\Imagine.Api.csproj", "{A7E06593-6203-48D1-B2DB-A233FF5263AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Art.Core", "Art.Core\Art.Core.csproj", "{ECAA46C0-CE90-4CE4-9EE0-C45C012B0E0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Core", "Imagine.Core\Imagine.Core.csproj", "{ECAA46C0-CE90-4CE4-9EE0-C45C012B0E0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Art.Infrastructure", "Art.Infrastructure\Art.Infrastructure.csproj", "{E0A6BA45-9B94-4813-8C11-5827E1497C1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Infrastructure", "Imagine.Infrastructure\Imagine.Infrastructure.csproj", "{E0A6BA45-9B94-4813-8C11-5827E1497C1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
