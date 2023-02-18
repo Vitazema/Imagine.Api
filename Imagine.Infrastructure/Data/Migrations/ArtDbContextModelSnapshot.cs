@@ -33,6 +33,9 @@ namespace Imagine.Infrastructure.Data.Migrations
                     b.Property<int>("ArtSettingsId")
                         .HasColumnType("int");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<int>("Progress")
                         .HasColumnType("int");
 

@@ -19,24 +19,23 @@ public class ArtDbContextSeed
                 context.Users.Add(systemUser);
                 await context.SaveChangesAsync();
             }
+            
+            context.RemoveRange(context.Arts);
 
-            if (!context.Arts.Any())
+            var settingsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Settings.json");
+            var settings = JsonSerializer.Deserialize<List<ArtSettings>>(settingsJson);
+
+            var artsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Arts.json");
+            var arts = JsonSerializer.Deserialize<List<Art>>(artsJson);
+
+            foreach (var art in arts.Where(art => !context.Arts.Contains(art)))
             {
-                var settingsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Settings.json");
-                var settings = JsonSerializer.Deserialize<List<ArtSettings>>(settingsJson);
-
-                var artsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Arts.json");
-                var arts = JsonSerializer.Deserialize<List<Art>>(artsJson);
-
-                foreach (var art in arts.Where(art => !context.Arts.Contains(art)))
-                {
-                    art.ArtSettings = settings.FirstOrDefault();
-                    art.User = systemUser;
-                    context.Arts.Add(art);
-                }
-
-                await context.SaveChangesAsync();
+                art.ArtSettings = settings.FirstOrDefault();
+                art.User = systemUser;
+                context.Arts.Add(art);
             }
+
+            await context.SaveChangesAsync();
         }
         catch (Exception e)
         {

@@ -1,3 +1,5 @@
+using Imagine.Api.Configuration;
+using Imagine.Api.Helpers;
 using Imagine.Core.Contracts;
 using Imagine.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -8,12 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ArtDbContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
         .EnableSensitiveDataLogging());
 builder.Services.AddScoped<IArtRepository, ArtRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
+// To get application settings
+var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
+builder.WebHost.UseUrls(settings.AppUrl);
 
 var app = builder.Build();
 
@@ -34,12 +41,13 @@ catch (Exception e)
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // app.UseSwagger();
+    // app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
