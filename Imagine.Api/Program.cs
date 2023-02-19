@@ -1,22 +1,22 @@
 using Imagine.Api.Configuration;
+using Imagine.Api.Extensions;
 using Imagine.Api.Helpers;
-using Imagine.Core.Contracts;
+using Imagine.Api.Middleware;
 using Imagine.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ArtDbContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
         .EnableSensitiveDataLogging());
-builder.Services.AddScoped<IArtRepository, ArtRepository>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
+builder.Services.AddApplicationServices();
+builder.Services.AddSwaggerDocumentation();
 
 // To get application settings
 var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
@@ -38,12 +38,13 @@ catch (Exception e)
     logger.LogError(e, "An error occured during migration");
 }
 
+app.UseSwaggerDocumentation();
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    // app.UseSwagger();
-    // app.UseSwaggerUI();
-}
+app.UseMiddleware<ExceptionMiddleware>();
+
+// Add endpoints for error handling. Redirects to errors controller.
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 app.UseHttpsRedirection();
 
