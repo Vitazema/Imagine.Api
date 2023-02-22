@@ -1,0 +1,29 @@
+[
+  {
+    "Id": 1,
+    "Title": "a man in a spacesuit on a horse and blue hat",
+    "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp.png",
+    "Progress": 100,
+    "UserId": 1,
+    "CreatedAt": "2023-02-15T19:41:35",
+    "ArtSettingsId": 1
+  },
+  {
+    "Id": 2,
+    "Title": "a man in a spacesuit on a horse",
+    "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp2.png",
+    "Progress": 50,
+    "CreatedAt": "2023-02-17T12:41:35",
+    "UserId": 2,
+    "ArtSettingsId": 2
+  },
+  {
+    "Id": 3,
+    "Title": "a spacesuit on a ",
+    "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp2.png",
+    "Progress": 100,
+    "CreatedAt": "2023-02-17T12:41:35",
+    "UserId": 2,
+    "ArtSettingsId": 2
+  }
+]

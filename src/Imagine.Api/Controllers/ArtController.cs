@@ -12,11 +12,11 @@ namespace Imagine.Api.Controllers;
 public class ArtsController : BaseApiController
 {
     private readonly IRepository<Art> _artsRepository;
-    private readonly IRepository<ArtSettings> _artSettingsRepository;
+    private readonly IRepository<ArtSetting> _artSettingsRepository;
     private readonly IMapper _mapper;
 
     public ArtsController(IRepository<Art> artsRepository,
-        IRepository<ArtSettings> artSettingsRepository,
+        IRepository<ArtSetting> artSettingsRepository,
         IMapper mapper
     )
     {
@@ -55,7 +55,7 @@ public class ArtsController : BaseApiController
     }
 
     [HttpGet("settings/{id:int}")]
-    public async Task<ActionResult<IReadOnlyList<ArtSettings>>> GetSettings(int id)
+    public async Task<ActionResult<IReadOnlyList<ArtSetting>>> GetSettings(int id)
     {
         return Ok(await _artSettingsRepository.GetByIdAsync(id));
     }

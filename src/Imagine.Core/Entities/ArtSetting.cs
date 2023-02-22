@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Imagine.Core.Entities;
 
-public class ArtSettings : BaseEntity
+public class ArtSetting : BaseEntity
 {
     public string Model { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]

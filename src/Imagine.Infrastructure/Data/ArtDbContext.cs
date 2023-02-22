@@ -12,7 +12,7 @@ public class ArtDbContext : DbContext
 
     public DbSet<Art> Arts { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<ArtSettings> ArtSettings { get; set; }
+    public DbSet<ArtSetting> ArtSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

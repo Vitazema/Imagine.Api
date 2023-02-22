@@ -29,7 +29,7 @@ var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
 try
 {
     var context = scope.ServiceProvider.GetRequiredService<ArtDbContext>();
-    await context.Database.MigrateAsync();
+    // await context.Database.MigrateAsync();
     await ArtDbContextSeed.SeedAsync(context, loggerFactory);
 }
 catch (Exception e)

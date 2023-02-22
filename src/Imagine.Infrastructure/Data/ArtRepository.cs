@@ -15,18 +15,18 @@ public class ArtRepository : IArtRepository
     public async Task<IReadOnlyList<Art>> GetArtAsync()
     {
         return await _context.Arts
-            .Include(a => a.ArtSettings)
+            .Include(a => a.ArtSetting)
             .Include(a => a.User)
             .ToListAsync();
     }
     public async Task<Art> GetArtByIdAsync(int id)
     {
         return await _context.Arts
-            .Include(a => a.ArtSettings)
+            .Include(a => a.ArtSetting)
             .Include(a => a.User)
             .FirstOrDefaultAsync(a => a.Id == id);
     }
-    public async Task<ArtSettings> GetArtSettingsByIdAsync(int id)
+    public async Task<ArtSetting> GetArtSettingsByIdAsync(int id)
     {
         return await _context.ArtSettings.FindAsync(id);
     }

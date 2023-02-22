@@ -7,6 +7,7 @@ public class ArtSpecRequest
     private const int MaxPageSize = 50;
     public int PageIndex { get; set; } = 1;
     private int _pageSize = 10;
+    private string _search;
 
     public int PageSize
     {
@@ -17,4 +18,10 @@ public class ArtSpecRequest
     public ArtType? ArtType { get; set; }
     public int? UserId { get; set; }
     public string Sort { get; set; }
+
+    public string Search
+    {
+        get => _search;
+        set => _search = value?.ToLower();
+    }
 }

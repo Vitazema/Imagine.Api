@@ -6,5 +6,5 @@ public interface IArtRepository
 {
     Task<Art> GetArtByIdAsync(int id);
     Task<IReadOnlyList<Art>> GetArtAsync();
-    Task<ArtSettings> GetArtSettingsByIdAsync(int id);
+    Task<ArtSetting> GetArtSettingsByIdAsync(int id);
 }

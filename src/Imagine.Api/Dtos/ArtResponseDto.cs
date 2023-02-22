@@ -10,5 +10,5 @@ public class ArtResponseDto
     public int Progress { get; set; }
     public string CreatedAt { get; set; }
     public string User { get; set; }
-    public ArtSettings ArtSettings { get; set; }
+    public ArtSetting ArtSetting { get; set; }
 }

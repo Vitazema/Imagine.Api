@@ -30,6 +30,9 @@ namespace Imagine.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ArtSettingId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ArtSettingsId")
                         .HasColumnType("int");
 
@@ -45,19 +48,19 @@ namespace Imagine.Infrastructure.Data.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArtSettingsId");
+                    b.HasIndex("ArtSettingId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Arts");
                 });
 
-            modelBuilder.Entity("Imagine.Core.Entities.ArtSettings", b =>
+            modelBuilder.Entity("Imagine.Core.Entities.ArtSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,17 +105,17 @@ namespace Imagine.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Imagine.Core.Entities.Art", b =>
                 {
-                    b.HasOne("Imagine.Core.Entities.ArtSettings", "ArtSettings")
+                    b.HasOne("Imagine.Core.Entities.ArtSetting", "ArtSetting")
                         .WithMany()
-                        .HasForeignKey("ArtSettingsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ArtSettingId");
 
                     b.HasOne("Imagine.Core.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("ArtSettings");
+                    b.Navigation("ArtSetting");
 
                     b.Navigation("User");
                 });
