@@ -8,7 +8,7 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<Art, ArtResponseDto>()
+        CreateMap<Art, ArtRequestDto>()
             .ForMember(a => a.User, o => o.MapFrom(u => u.User.FullName))
             .ForMember(a => a.Url, o => o.MapFrom<ArtUrlResolver>());
     }

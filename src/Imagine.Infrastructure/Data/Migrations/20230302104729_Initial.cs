@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -48,15 +49,16 @@ namespace Imagine.Infrastructure.Data.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Progress = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    ArtSettingsId = table.Column<int>(type: "int", nullable: false)
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ArtSettingId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Arts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Arts_ArtSettings_ArtSettingsId",
-                        column: x => x.ArtSettingsId,
+                        name: "FK_Arts_ArtSettings_ArtSettingId",
+                        column: x => x.ArtSettingId,
                         principalTable: "ArtSettings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -64,13 +66,14 @@ namespace Imagine.Infrastructure.Data.Migrations
                         name: "FK_Arts_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Arts_ArtSettingsId",
+                name: "IX_Arts_ArtSettingId",
                 table: "Arts",
-                column: "ArtSettingsId");
+                column: "ArtSettingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Arts_UserId",

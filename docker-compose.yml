@@ -1,0 +1,86 @@
+version: '3.9'
+
+services:
+  imagine-api:
+    image: imagine-api
+    container_name: imagine-api
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mssql
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: imagine-mssql
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: Strongpassword!
+    volumes:
+      - ./mssql/data:/var/opt/mssql/data
+    ports:
+      - "1433:1433"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+  
+  
+  # postgres:
+  #   image: postgres
+  #   container_name: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     PGDATA: "/var/lib/postgresql/data/pgdata"
+  #   volumes:
+  #     - ./postgres/scripts:/docker-entrypoint-initdb.d
+  #     - ./postgres:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "1"
+  #         memory: 2G
+
+
+  # rabbitmq:
+  #   image: rabbitmq:management
+  #   hostname: rabbitmq
+  #   container_name: rabbitmq
+  #   restart: unless-stopped
+  #   volumes:
+  #     - rabbitmq-data:/var/lib/rabbitmq
+  #   ports: 
+  #     - 5672:5672
+  #     - 15672:15672 #UI
+
+  # redis:
+  #   image: redis
+  #   container_name: redis
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./redis:/data
+  #   ports: 
+  #     - "6379:6379"
+
+  # mongo:
+  #   image: mongo
+  #   container_name: mongo
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongo-data:/data/db 
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "1"
+
+#volumes:
+  # mongo-data:
+  # rabbitmq-data:

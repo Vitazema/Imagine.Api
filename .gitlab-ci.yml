@@ -1,0 +1,69 @@
+# Official framework image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/node/tags/
+image: mcr.microsoft.com/dotnet/sdk:7.0
+
+# Pick zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: https://docs.gitlab.com/ee/ci/services/index.html
+# services:
+#   - mysql:latest
+#   - redis:latest
+#   - postgres:latest
+
+# This folder is cached between builds
+# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH != "master" && $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+    - when: always
+
+variables:
+  IMAGE_NAME: imagine-api
+  APP_VERSION: 0.1.0
+
+build:
+  stage: build
+  tags:
+    - docker
+    - windows
+  script:
+    - dotnet restore
+    - dotnet build -c Release
+
+build_image:
+  stage: deploy
+  needs:
+    - build
+  tags:
+    - shell
+    - linux
+  only:
+    - master
+  before_script:
+    - echo "Image tag version is $APP_VERSION"
+    # - export APP_VERSION=$APP_VERSION-$CI_PIPELINE_IID
+    - echo "VERSION=$APP_VERSION" >> build.env
+  script:
+    - echo "Building and tagging docker image $IMAGE_NAME:$APP_VERSION"
+    - docker build -t $IMAGE_NAME:$APP_VERSION .
+  artifacts:
+    reports:
+      dotenv: build.env
+
+deploy:
+  stage: deploy
+  tags:
+    - shell
+    - linux
+  only:
+    - master
+  needs:
+    - build_image
+  environment: production
+  before_script:
+    - export DC_IMAGE_NAME=$IMAGE_NAME
+    - export DC_IMAGE_TAG=$VERSION
+  script:
+    - docker compose up -d

@@ -17,25 +17,26 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerDocumentation();
-
-// To get application settings
-var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
-builder.WebHost.UseUrls(settings.AppUrl);
+builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .SetIsOriginAllowed(_ => true) // allow any origin
+            .AllowCredentials()
+));
 
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
-var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
-try
+var services = scope.ServiceProvider;
+
+if (app.Environment.IsDevelopment())
 {
-    var context = scope.ServiceProvider.GetRequiredService<ArtDbContext>();
-    // await context.Database.MigrateAsync();
-    await ArtDbContextSeed.SeedAsync(context, loggerFactory);
+    await ArtDbContextSeed.SeedAsync(services);
 }
-catch (Exception e)
+else
 {
-    var logger = loggerFactory.CreateLogger<Program>();
-    logger.LogError(e, "An error occured during migration");
+    await using var context = services.GetRequiredService<ArtDbContext>();
+    await context.Database.MigrateAsync();
 }
 
 app.UseSwaggerDocumentation();
@@ -46,7 +47,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 // Add endpoints for error handling. Redirects to errors controller.
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-app.UseHttpsRedirection();
+app.UseCors();
 
 app.UseStaticFiles();
 

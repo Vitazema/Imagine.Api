@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imagine.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ArtDbContext))]
-    [Migration("20230213191018_Initial")]
+    [Migration("20230302104729_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -33,8 +33,11 @@ namespace Imagine.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ArtSettingsId")
+                    b.Property<int>("ArtSettingId")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Progress")
                         .HasColumnType("int");
@@ -45,19 +48,19 @@ namespace Imagine.Infrastructure.Data.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArtSettingsId");
+                    b.HasIndex("ArtSettingId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Arts");
                 });
 
-            modelBuilder.Entity("Imagine.Core.Entities.ArtSettings", b =>
+            modelBuilder.Entity("Imagine.Core.Entities.ArtSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,17 +105,19 @@ namespace Imagine.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Imagine.Core.Entities.Art", b =>
                 {
-                    b.HasOne("Imagine.Core.Entities.ArtSettings", "ArtSettings")
+                    b.HasOne("Imagine.Core.Entities.ArtSetting", "ArtSetting")
                         .WithMany()
-                        .HasForeignKey("ArtSettingsId")
+                        .HasForeignKey("ArtSettingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Imagine.Core.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("ArtSettings");
+                    b.Navigation("ArtSetting");
 
                     b.Navigation("User");
                 });

@@ -6,7 +6,7 @@
     "Progress": 100,
     "UserId": 1,
     "CreatedAt": "2023-02-15T19:41:35",
-    "ArtSettingsId": 1
+    "ArtSettingId": 1
   },
   {
     "Id": 2,
@@ -15,7 +15,7 @@
     "Progress": 50,
     "CreatedAt": "2023-02-17T12:41:35",
     "UserId": 2,
-    "ArtSettingsId": 2
+    "ArtSettingId": 2
   },
   {
     "Id": 3,
@@ -24,6 +24,6 @@
     "Progress": 100,
     "CreatedAt": "2023-02-17T12:41:35",
     "UserId": 2,
-    "ArtSettingsId": 2
+    "ArtSettingId": 2
   }
 ]

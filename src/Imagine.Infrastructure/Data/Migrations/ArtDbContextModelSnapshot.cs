@@ -30,10 +30,7 @@ namespace Imagine.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ArtSettingId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArtSettingsId")
+                    b.Property<int>("ArtSettingId")
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -107,7 +104,9 @@ namespace Imagine.Infrastructure.Data.Migrations
                 {
                     b.HasOne("Imagine.Core.Entities.ArtSetting", "ArtSetting")
                         .WithMany()
-                        .HasForeignKey("ArtSettingId");
+                        .HasForeignKey("ArtSettingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Imagine.Core.Entities.User", "User")
                         .WithMany()

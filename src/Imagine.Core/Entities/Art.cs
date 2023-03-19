@@ -11,5 +11,5 @@ public class Art : BaseEntity
     public User User { get; set; }
     public int UserId { get; set; }
     public ArtSetting ArtSetting { get; set; }
-    public int ArtSettingsId { get; set; }
+    public int ArtSettingId { get; set; }
 }

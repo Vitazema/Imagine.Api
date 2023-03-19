@@ -1,16 +1,18 @@
 ﻿using System.Text.Json;
 using Imagine.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Imagine.Infrastructure.Data;
 
 public class ArtDbContextSeed
 {
-    public static async Task SeedAsync(ArtDbContext context, ILoggerFactory loggerFactory)
+    public static async Task SeedAsync(IServiceProvider serviceProvider)
     {
         try
         {
+            using var context = serviceProvider.GetRequiredService<ArtDbContext>();
             using (var transaction = context.Database.BeginTransaction())
             {
                 var users = new List<User>()
@@ -32,22 +34,30 @@ public class ArtDbContextSeed
 
                 var settingsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Settings.json");
                 var settings = JsonSerializer.Deserialize<List<ArtSetting>>(settingsJson);
+                
 
                 SeedEntity(users, context);
-                SeedEntity(arts, context);
                 SeedEntity(settings, context);
+
+                foreach (var art in arts)
+                {
+                    art.ArtSetting = context.ArtSettings.Find(art.ArtSettingId);
+                }
+                
+                SeedEntity(arts, context);
 
                 transaction.Commit();
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<ArtDbContextSeed>();
-            logger.LogError(e.Message);
+            logger.LogError(ex.Message);
         }
     }
 
-    private static void SeedEntity<T>(ICollection<T> entities, ArtDbContext context) where T : BaseEntity 
+    private static void SeedEntity<T>(ICollection<T> entities, ArtDbContext context) where T : BaseEntity
     {
         foreach (var entity in entities)
         {

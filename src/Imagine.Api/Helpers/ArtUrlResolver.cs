@@ -5,7 +5,7 @@ using Imagine.Core.Entities;
 
 namespace Imagine.Api.Helpers;
 
-public class ArtUrlResolver : IValueResolver<Art, ArtResponseDto, string>
+public class ArtUrlResolver : IValueResolver<Art, ArtRequestDto, string>
 {
     private readonly IConfiguration _config;
 
@@ -13,12 +13,15 @@ public class ArtUrlResolver : IValueResolver<Art, ArtResponseDto, string>
     {
         _config = config;
     }
-    
-    public string Resolve(Art source, ArtResponseDto destination, string destMember, ResolutionContext context)
+
+    public string Resolve(Art source, ArtRequestDto destination, string destMember, ResolutionContext context)
     {
         if (string.IsNullOrEmpty(source.Url)) return null;
-        var url = _config.GetSection("Settings").Get<Settings>().AppUrl.Split(";").FirstOrDefault();
-        return url + source.Url;
+        var environmentUrl = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(";").FirstOrDefault();
+        if (environmentUrl == null) return null;
+        var baseUri = new Uri(environmentUrl.Replace("+", "localhost"));
+        var urlPath = new Uri(baseUri, source.Url);
+        return urlPath.AbsoluteUri;
 
     }
 }

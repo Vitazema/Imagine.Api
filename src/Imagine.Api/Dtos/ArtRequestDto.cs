@@ -2,7 +2,7 @@
 
 namespace Imagine.Api.Dtos;
 
-public class ArtResponseDto
+public class ArtRequestDto
 {
     public int Id { get; set; }
     public string Title { get; set; }
