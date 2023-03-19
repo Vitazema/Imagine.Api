@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   imagine-api:
-    image: imagine-api
+    image: ${DC_IMAGE_NAME}:${DC_IMAGE_TAG}
     container_name: imagine-api
     ports:
       - "5000:5000"

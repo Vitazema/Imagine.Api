@@ -63,6 +63,7 @@ deploy:
     - build_image
   environment: production
   before_script:
+    - echo "Deploying container $IMAGE_NAME:$APP_VERSION"
     - export DC_IMAGE_NAME=$IMAGE_NAME
     - export DC_IMAGE_TAG=$VERSION
   script:
