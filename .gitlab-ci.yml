@@ -20,8 +20,8 @@ workflow:
     - when: always
 
 variables:
-  IMAGE_NAME: imagine-api
-  APP_VERSION: 0.1.0
+  IMAGE_NAME: "imagine-api"
+  APP_VERSION: "0.1.0"
 
 build:
   stage: build
