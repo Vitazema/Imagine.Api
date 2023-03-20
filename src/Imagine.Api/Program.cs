@@ -1,4 +1,3 @@
-using Imagine.Api.Configuration;
 using Imagine.Api.Extensions;
 using Imagine.Api.Helpers;
 using Imagine.Api.Middleware;
@@ -9,22 +8,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddDbContext<ArtDbContext>(x =>
-    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-        .EnableSensitiveDataLogging());
+builder.Services.AddDbContext<ArtDbContext>(x => x
+    .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    .EnableSensitiveDataLogging());
 
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .SetIsOriginAllowed(_ => true) // allow any origin
-            .AllowCredentials()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(_ => true) // allow any origin
+    .AllowCredentials()
 ));
 
 var app = builder.Build();
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;

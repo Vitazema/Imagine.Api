@@ -12,42 +12,38 @@ public class ArtDbContextSeed
     {
         try
         {
-            using var context = serviceProvider.GetRequiredService<ArtDbContext>();
-            using (var transaction = context.Database.BeginTransaction())
+            await using var context = serviceProvider.GetRequiredService<ArtDbContext>();
+            var users = new List<User>()
             {
-                var users = new List<User>()
+                new()
                 {
-                    new()
-                    {
-                        Id = 1,
-                        FullName = "System"
-                    },
-                    new()
-                    {
-                        Id = 2,
-                        FullName = "UserName"
-                    }
-                };
-
-                var artsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Arts.json");
-                var arts = JsonSerializer.Deserialize<List<Art>>(artsJson);
-
-                var settingsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Settings.json");
-                var settings = JsonSerializer.Deserialize<List<ArtSetting>>(settingsJson);
-                
-
-                SeedEntity(users, context);
-                SeedEntity(settings, context);
-
-                foreach (var art in arts)
+                    Id = 1,
+                    FullName = "System"
+                },
+                new()
                 {
-                    art.ArtSetting = context.ArtSettings.Find(art.ArtSettingId);
+                    Id = 2,
+                    FullName = "UserName"
                 }
-                
-                SeedEntity(arts, context);
+            };
 
-                transaction.Commit();
+            var artsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Arts.json");
+            var arts = JsonSerializer.Deserialize<List<Art>>(artsJson);
+
+            var settingsJson = File.ReadAllText("../Imagine.Infrastructure/Data/SeedData/Settings.json");
+            var settings = JsonSerializer.Deserialize<List<ArtSetting>>(settingsJson);
+                
+
+            SeedEntity(users, context);
+            SeedEntity(settings, context);
+
+            foreach (var art in arts)
+            {
+                art.ArtSetting = context.ArtSettings.Find(art.ArtSettingId);
             }
+                
+            SeedEntity(arts, context);
+
         }
         catch (Exception ex)
         {
@@ -67,8 +63,6 @@ public class ArtDbContextSeed
                 context.Set<T>().Update(entity);
         };
 
-        context.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT dbo.{typeof(T).Name}s ON;");
         context.SaveChanges();
-        context.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT dbo.{typeof(T).Name}s OFF;");
     }
 }

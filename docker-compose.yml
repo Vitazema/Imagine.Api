@@ -7,46 +7,53 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - mssql
+      postgres:
+        condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5000
 
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: imagine-mssql
-    environment:
-      ACCEPT_EULA: Y
-      MSSQL_SA_PASSWORD: Strongpassword!
-    volumes:
-      - ./mssql/data:/var/opt/mssql/data
-    ports:
-      - "1433:1433"
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
+  postgres:
+   image: postgres
+   container_name: postgres
+   ports:
+     - "5432:5432"
+   environment:
+     POSTGRES_DB: artdb
+     POSTGRES_USER: postgres
+     POSTGRES_PASSWORD: Strongpassword!
+     PGDATA: "/var/lib/postgresql/data/pgdata"
+   volumes:
+     - ~/imagine/postgres/scripts:/docker-entrypoint-initdb.d
+     - ~/imagine/postgres:/var/lib/postgresql/data
+   restart: unless-stopped
+   healthcheck:
+     test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+     interval: 5s
+     timeout: 5s
+     retries: 5
+   deploy:
+     resources:
+       limits:
+         cpus: "2"
+         memory: 2G
+
+#  mssql:
+#    image: mcr.microsoft.com/mssql/server:2019-latest
+#    container_name: imagine-mssql
+#    environment:
+#      ACCEPT_EULA: Y
+#      MSSQL_SA_PASSWORD: Strongpassword!
+#    volumes:
+#      - ./mssql/data:/var/opt/mssql/data
+#    ports:
+#      - "1433:1433"
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: "2"
   
   
-  # postgres:
-  #   image: postgres
-  #   container_name: postgres
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_DB: postgres
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     PGDATA: "/var/lib/postgresql/data/pgdata"
-  #   volumes:
-  #     - ./postgres/scripts:/docker-entrypoint-initdb.d
-  #     - ./postgres:/var/lib/postgresql/data
-  #   restart: unless-stopped
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: "1"
-  #         memory: 2G
 
 
   # rabbitmq:
