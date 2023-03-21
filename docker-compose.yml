@@ -9,9 +9,13 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    restart: unless-stopped
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5000
+    networks:
+      - imagine-api
+      - imagine-db
 
   postgres:
    image: postgres
@@ -37,7 +41,14 @@ services:
        limits:
          cpus: "2"
          memory: 2G
+   networks:
+     - imagine-db
 
+networks:
+  imagine-api:
+    name: imagine-api
+  imagine-db:
+    
 #  mssql:
 #    image: mcr.microsoft.com/mssql/server:2019-latest
 #    container_name: imagine-mssql
