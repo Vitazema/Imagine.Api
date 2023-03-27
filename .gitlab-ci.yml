@@ -67,4 +67,5 @@ deploy:
     - export DC_IMAGE_NAME=$IMAGE_NAME
     - export DC_IMAGE_TAG=$VERSION
   script:
+    - docker compose down
     - docker compose up -d
