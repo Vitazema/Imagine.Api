@@ -3,7 +3,7 @@
 namespace Imagine.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("/[controller]")]
 public class BaseApiController : ControllerBase
 {
     
