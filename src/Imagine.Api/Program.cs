@@ -1,7 +1,9 @@
+using HealthChecks.UI.Client;
 using Imagine.Api.Extensions;
 using Imagine.Api.Helpers;
 using Imagine.Api.Middleware;
 using Imagine.Infrastructure.Data;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
@@ -17,7 +19,8 @@ builder.Services.AddDbContext<ArtDbContext>(x => x
     .EnableSensitiveDataLogging());
 
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
 builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
@@ -74,7 +77,10 @@ app.UseStaticFiles();
 
 app.UseAuthorization();
 
-app.MapHealthChecks("/healthz");
+app.MapHealthChecks("/healthz", new HealthCheckOptions()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 app.MapControllers();
 
 app.Run();
