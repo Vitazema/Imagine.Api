@@ -63,7 +63,6 @@ app.UseAuthorization();
 
 app.UseSwaggerDocumentation();
 
-app.MapHealthChecks("/healhtz");
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
@@ -71,12 +70,11 @@ app.UseMiddleware<ExceptionMiddleware>();
 // Add endpoints for error handling. Redirects to errors controller.
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-app.UseCors();
-
 app.UseStaticFiles();
 
 app.UseAuthorization();
 
+app.MapHealthChecks("/healthz");
 app.MapControllers();
 
 app.Run();

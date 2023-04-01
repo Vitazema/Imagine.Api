@@ -2,6 +2,9 @@
 EXPOSE 5000
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y curl jq \
+    
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 COPY Imagine.sln ./
