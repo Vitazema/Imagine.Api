@@ -15,6 +15,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5000
+    healthcheck:
+      test: "curl -f localhost:5000/healthz"
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   imagine-database:
    image: postgres
@@ -34,7 +39,7 @@ services:
      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
      interval: 5s
      timeout: 5s
-     retries: 5
+     retries: 10
    deploy:
      resources:
        limits:
@@ -44,57 +49,3 @@ services:
 networks:
   default:
     name: imagine
-    
-#  mssql:
-#    image: mcr.microsoft.com/mssql/server:2019-latest
-#    container_name: imagine-mssql
-#    environment:
-#      ACCEPT_EULA: Y
-#      MSSQL_SA_PASSWORD: Strongpassword!
-#    volumes:
-#      - ./mssql/data:/var/opt/mssql/data
-#    ports:
-#      - "1433:1433"
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: "2"
-  
-  
-
-
-  # rabbitmq:
-  #   image: rabbitmq:management
-  #   hostname: rabbitmq
-  #   container_name: rabbitmq
-  #   restart: unless-stopped
-  #   volumes:
-  #     - rabbitmq-data:/var/lib/rabbitmq
-  #   ports: 
-  #     - 5672:5672
-  #     - 15672:15672 #UI
-
-  # redis:
-  #   image: redis
-  #   container_name: redis
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./redis:/data
-  #   ports: 
-  #     - "6379:6379"
-
-  # mongo:
-  #   image: mongo
-  #   container_name: mongo
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - mongo-data:/data/db 
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: "1"
-
-#volumes:
-  # mongo-data:
-  # rabbitmq-data:
