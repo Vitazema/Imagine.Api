@@ -12,7 +12,7 @@ public static class ApplicationServicesExtensions
     {
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IArtRepository, ArtRepository>();
-        
+
         services.Configure<ApiBehaviorOptions>(options =>
         {
             options.InvalidModelStateResponseFactory = actionContext =>

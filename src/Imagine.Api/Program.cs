@@ -1,8 +1,9 @@
 using HealthChecks.UI.Client;
 using Imagine.Api.Extensions;
-using Imagine.Api.Helpers;
 using Imagine.Api.Middleware;
 using Imagine.Infrastructure.Data;
+using Imagine.Infrastructure.Data.AutoMapper;
+using Imagine.Infrastructure.Data.Configurations;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,17 +13,17 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
     ApplicationName = typeof(Program).Assembly.FullName
 });
 
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<ArtDbContext>(x => x
     .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     .EnableSensitiveDataLogging());
 
-builder.Services.AddAutoMapper(typeof(MappingProfiles));
+builder.Services.AddCustomAutoMapper();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
 builder.Services.AddApplicationServices();
-builder.Services.AddSwaggerDocumentation();
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
@@ -33,23 +34,20 @@ builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
 var app = builder.Build();
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
+app.DbInitialize();
 
 if (app.Environment.IsDevelopment())
 {
+    builder.Services.AddSwaggerDocumentation();
     // app.UseDeveloperExceptionPage();
-    await ArtDbContextSeed.SeedAsync(services);
 }
-else
-{
-    await using var context = services.GetRequiredService<ArtDbContext>();
-    await context.Database.MigrateAsync();
-    // app.UseExceptionHandler("/Error");
-    
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    // app.UseHsts();
-}
+// else
+// {
+// app.UseExceptionHandler("/Error");
+
+// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+// app.UseHsts();
+// }
 
 // # If the app calls UseStaticFiles, place UseStaticFiles before UseRouting.
 app.UseStaticFiles();
