@@ -1,20 +1,23 @@
 ﻿using AutoMapper;
-using Imagine.Api.Configuration;
-using Imagine.Api.Dtos;
+using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
+using Microsoft.Extensions.Configuration;
 
-namespace Imagine.Api.Helpers;
+namespace Imagine.Infrastructure.Data.AutoMapper;
 
-public class ArtUrlResolver : IValueResolver<Art, ArtRequestDto, string>
+public class ArtUrlResolver : IValueResolver<Art, ArtDto, string>
 {
     private readonly IConfiguration _config;
+    public ArtUrlResolver()
+    {
+    }
 
     public ArtUrlResolver(IConfiguration config)
     {
         _config = config;
     }
 
-    public string Resolve(Art source, ArtRequestDto destination, string destMember, ResolutionContext context)
+    public string Resolve(Art source, ArtDto destination, string destMember, ResolutionContext context)
     {
         if (string.IsNullOrEmpty(source.Url)) return null;
         var environmentUrl = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(";").FirstOrDefault();

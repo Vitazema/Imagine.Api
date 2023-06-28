@@ -20,6 +20,8 @@ builder.Services.AddDbContext<ArtDbContext>(x => x
     .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     .EnableSensitiveDataLogging());
 
+builder.Services.AddSwaggerDocumentation();
+
 builder.Services.AddCustomAutoMapper();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
@@ -38,7 +40,7 @@ app.DbInitialize();
 
 if (app.Environment.IsDevelopment())
 {
-    builder.Services.AddSwaggerDocumentation();
+    app.UseSwaggerDocumentation();
     // app.UseDeveloperExceptionPage();
 }
 // else
@@ -62,7 +64,6 @@ app.UseCors();
 app.UseAuthorization();
 // app.UseAuthentication();
 
-app.UseSwaggerDocumentation();
 
 
 // Configure the HTTP request pipeline.

@@ -1,8 +1,8 @@
 ﻿using Imagine.Core.Entities;
 
-namespace Imagine.Api.Dtos;
+namespace Imagine.Core.Contracts;
 
-public class ArtRequestDto
+public class ArtDto
 {
     public int Id { get; set; }
     public string Title { get; set; }
@@ -10,5 +10,5 @@ public class ArtRequestDto
     public int Progress { get; set; }
     public string CreatedAt { get; set; }
     public string User { get; set; }
-    public ArtSetting ArtSetting { get; set; }
+    public string ArtSetting { get; set; }
 }

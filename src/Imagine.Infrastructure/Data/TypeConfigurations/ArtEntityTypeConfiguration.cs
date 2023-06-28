@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Imagine.Infrastructure.Data.Config;
+namespace Imagine.Infrastructure.Data.TypeConfigurations;
 
-public class ArtConfiguration : IEntityTypeConfiguration<Art>
+public class ArtEntityTypeConfiguration : IEntityTypeConfiguration<Art>
 {
     public void Configure(EntityTypeBuilder<Art> builder)
     {
-
     }
 }
