@@ -21,12 +21,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Data\SeedData\Arts.json">
+      <None Remove="Data\SeedData\Arts.json" />
+      <Content Include="Data\SeedData\Arts.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\SeedData\Users.json">
+      </Content>
+      <None Remove="Data\SeedData\Users.json" />
+      <Content Include="Data\SeedData\Users.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+      </Content>
     </ItemGroup>
 
 </Project>
