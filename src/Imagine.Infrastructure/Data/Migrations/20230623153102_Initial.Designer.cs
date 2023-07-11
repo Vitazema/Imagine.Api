@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Imagine.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ArtDbContext))]
-    [Migration("20230401074222_Update_Art_DateTimeUseDefaultUtcTimeNow")]
-    partial class Update_Art_DateTimeUseDefaultUtcTimeNow
+    [Migration("20230623153102_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,17 +33,31 @@ namespace Imagine.Infrastructure.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ArtSettingId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ArtSetting")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Model")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NegativePrompt")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "negative_prompt");
+
                     b.Property<int>("Progress")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Prompt")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "prompt");
+
                     b.Property<string>("Title")
                         .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Url")
                         .HasColumnType("text");
@@ -53,38 +67,9 @@ namespace Imagine.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArtSettingId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Arts");
-                });
-
-            modelBuilder.Entity("Imagine.Core.Entities.ArtSetting", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Model")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NegativePrompt")
-                        .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "negative_prompt");
-
-                    b.Property<string>("Prompt")
-                        .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "prompt");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ArtSettings");
                 });
 
             modelBuilder.Entity("Imagine.Core.Entities.User", b =>
@@ -95,31 +80,45 @@ namespace Imagine.Infrastructure.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("FullName")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 6, 23, 15, 31, 2, 259, DateTimeKind.Utc).AddTicks(1802),
+                            FullName = "System"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 6, 23, 15, 31, 2, 259, DateTimeKind.Utc).AddTicks(1986),
+                            FullName = "UserName"
+                        });
                 });
 
             modelBuilder.Entity("Imagine.Core.Entities.Art", b =>
                 {
-                    b.HasOne("Imagine.Core.Entities.ArtSetting", "ArtSetting")
-                        .WithMany()
-                        .HasForeignKey("ArtSettingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Imagine.Core.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Arts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ArtSetting");
-
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Imagine.Core.Entities.User", b =>
+                {
+                    b.Navigation("Arts");
                 });
 #pragma warning restore 612, 618
         }

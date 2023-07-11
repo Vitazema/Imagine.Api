@@ -33,14 +33,10 @@ public class ArtsController : BaseApiController
 
         var data = _mapper.Map<IReadOnlyList<ArtDto>>(arts);
         
+        Thread.Sleep(2000);
+        
         return Ok(new Pagination<ArtDto>(artRequest.PageIndex, artRequest.PageSize,
             totalArts, data));
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<int>> AddArt([FromBody] ArtDto addArt)
-    {
-        return Ok(Random.Shared.Next(1, 999999999));
     }
 
     [HttpGet("{id:int}")]
@@ -54,5 +50,11 @@ public class ArtsController : BaseApiController
         if (art == null) return NotFound(new ApiResponse(404));
         
         return Ok(_mapper.Map<Art, ArtDto>(art));
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult<int>> AddArt([FromBody] ArtDto addArt)
+    {
+        return Ok(Random.Shared.Next(1, 999999999));
     }
 }

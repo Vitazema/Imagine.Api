@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Imagine.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
@@ -13,28 +15,13 @@ namespace Imagine.Infrastructure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ArtSettings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Model = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<int>(type: "integer", nullable: false),
-                    Prompt = table.Column<string>(type: "text", nullable: true),
-                    NegativePrompt = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ArtSettings", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FullName = table.Column<string>(type: "text", nullable: true)
+                    FullName = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,19 +37,17 @@ namespace Imagine.Infrastructure.Data.Migrations
                     Title = table.Column<string>(type: "text", nullable: true),
                     Url = table.Column<string>(type: "text", nullable: true),
                     Progress = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    ArtSettingId = table.Column<int>(type: "integer", nullable: false)
+                    Model = table.Column<string>(type: "text", nullable: true),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Prompt = table.Column<string>(type: "text", nullable: true),
+                    NegativePrompt = table.Column<string>(type: "text", nullable: true),
+                    ArtSetting = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Arts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Arts_ArtSettings_ArtSettingId",
-                        column: x => x.ArtSettingId,
-                        principalTable: "ArtSettings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Arts_Users_UserId",
                         column: x => x.UserId,
@@ -71,10 +56,14 @@ namespace Imagine.Infrastructure.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Arts_ArtSettingId",
-                table: "Arts",
-                column: "ArtSettingId");
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "FullName" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 6, 23, 15, 31, 2, 259, DateTimeKind.Utc).AddTicks(1802), "System" },
+                    { 2, new DateTime(2023, 6, 23, 15, 31, 2, 259, DateTimeKind.Utc).AddTicks(1986), "UserName" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Arts_UserId",
@@ -87,9 +76,6 @@ namespace Imagine.Infrastructure.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Arts");
-
-            migrationBuilder.DropTable(
-                name: "ArtSettings");
 
             migrationBuilder.DropTable(
                 name: "Users");
