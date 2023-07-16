@@ -24,4 +24,12 @@ public class ArtRepository : IArtRepository
             .Include(a => a.User)
             .FirstOrDefaultAsync(a => a.Id == id);
     }
+
+    public async Task<int> DeleteArtAsync(int id)
+    {
+        var art = await _context.Arts.FindAsync(id);
+        if (art != null) _context.Arts.Remove(art);
+        await _context.SaveChangesAsync();
+        return id;
+    }
 }

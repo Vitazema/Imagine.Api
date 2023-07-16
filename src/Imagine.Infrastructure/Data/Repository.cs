@@ -13,6 +13,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         _context = context;
     }
+
     public async Task<T> GetByIdAsync(int id)
     {
         return await _context.Set<T>().FindAsync(id);
@@ -36,6 +37,33 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     public async Task<int> CountAsync(ISpecification<T> specification)
     {
         return await ApplySpecification(specification).CountAsync();
+    }
+
+    public async Task<T> UpdateAsync(T entity)
+    {
+        var entityToUpdate = await _context.Set<T>().FindAsync(entity.Id);
+        if (entityToUpdate == null) return null;
+        entityToUpdate = entity;
+        _context.Entry(entityToUpdate).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+        return entity;
+    }
+
+    public async Task<T> AddAsync(T entity)
+    {
+        _context.Set<T>().Add(entity);
+        await _context.SaveChangesAsync();
+        return entity;
+    }
+
+    public async Task<int?> DeleteAsync(int id)
+    {
+        var existedEntity = await _context.Set<T>().FindAsync(id);
+        if (existedEntity == null) return null;
+
+        _context.Set<T>().Remove(existedEntity);
+        await _context.SaveChangesAsync();
+        return id;
     }
 
     private IQueryable<T> ApplySpecification(ISpecification<T> specification)

@@ -7,16 +7,6 @@ namespace Imagine.Infrastructure.Data.AutoMapper;
 
 public class ArtUrlResolver : IValueResolver<Art, ArtDto, string>
 {
-    private readonly IConfiguration _config;
-    public ArtUrlResolver()
-    {
-    }
-
-    public ArtUrlResolver(IConfiguration config)
-    {
-        _config = config;
-    }
-
     public string Resolve(Art source, ArtDto destination, string destMember, ResolutionContext context)
     {
         if (string.IsNullOrEmpty(source.Url)) return null;

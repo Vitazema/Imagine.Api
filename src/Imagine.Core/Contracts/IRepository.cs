@@ -10,4 +10,7 @@ public interface IRepository<T> where T : BaseEntity
     Task<T> GetEntityWithSpec(ISpecification<T> specification);
     Task<IReadOnlyList<T>> ListAsync(ISpecification<T> specification);
     Task<int> CountAsync(ISpecification<T> specification);
+    Task<T> AddAsync(T entity);
+    Task<T> UpdateAsync(T entity);
+    Task<int?> DeleteAsync(int id);
 }

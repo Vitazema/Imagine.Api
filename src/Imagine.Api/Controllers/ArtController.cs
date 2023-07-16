@@ -11,13 +11,15 @@ namespace Imagine.Api.Controllers;
 public class ArtsController : BaseApiController
 {
     private readonly IRepository<Art> _artsRepository;
+    private readonly IRepository<User> _usersRepository;
     private readonly IMapper _mapper;
 
-    public ArtsController(IRepository<Art> artsRepository,
+    public ArtsController(IRepository<Art> artsRepository, IRepository<User> usersRepository,
         IMapper mapper
     )
     {
-        _artsRepository = artsRepository;
+        this._artsRepository = artsRepository;
+        _usersRepository = usersRepository;
         _mapper = mapper;
     }
 
@@ -53,8 +55,63 @@ public class ArtsController : BaseApiController
     }
     
     [HttpPost]
-    public async Task<ActionResult<int>> AddArt([FromBody] ArtDto addArt)
+    public async Task<ActionResult<ArtDto>> AddArt([FromBody] ArtDto dto)
     {
-        return Ok(Random.Shared.Next(1, 999999999));
+        Thread.Sleep(2000);
+        
+        var user = _usersRepository
+            .ListAllAsync()
+            .Result
+            .FirstOrDefault(x => x.FullName == dto.User);
+        if (user == null)
+        {
+            return BadRequest(new ApiResponse(400, $"User {dto.User} not found"));
+        }
+        
+        var newArt = new Art()
+        {
+            User = user,
+            Prompt = dto.ArtSetting,
+            Title = dto.Title
+        };
+
+        var artResult = await _artsRepository.AddAsync(newArt);
+        var artDto = _mapper.Map<Art, ArtDto>(artResult);
+        return Created($"/gallery/{artDto.Id}", artDto);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<ArtDto>> UpdateArt([FromBody] ArtDto dto)
+    {
+        var art = _mapper.Map<ArtDto, Art>(dto);
+        var updatedArt = await _artsRepository.UpdateAsync(art);
+        
+        if (updatedArt == null)
+        {
+            return NotFound(new ApiResponse(404, $"Art {dto.Id} not found"));
+        }
+        
+
+        if (updatedArt == null)
+            throw new ArgumentNullException(nameof(updatedArt), $"Art with id: {art.Id} cannot be updated");
+        
+        return Ok(updatedArt);
+    }
+    
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<ArtDto>> DeleteArt(int id)
+    {
+        var art = await _artsRepository.GetByIdAsync(id);
+        if (art == null)
+        {
+            return NotFound(new ApiResponse(404, $"Art {id} not found"));
+        }
+
+        var result = await _artsRepository.DeleteAsync(art.Id);
+        if (result == null)
+        {
+            return BadRequest(new ApiResponse(400, $"No art with {id}"));
+        }
+        return Ok();
     }
 }

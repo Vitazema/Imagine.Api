@@ -6,4 +6,5 @@ public interface IArtRepository
 {
     Task<Art> GetArtByIdAsync(int id);
     Task<IReadOnlyList<Art>> GetArtAsync();
+    Task<int> DeleteArtAsync(int id);
 }
