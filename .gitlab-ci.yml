@@ -27,7 +27,6 @@ build:
   stage: build
   tags:
     - docker
-    - windows
   script:
     - dotnet restore
     - dotnet build -c Release
