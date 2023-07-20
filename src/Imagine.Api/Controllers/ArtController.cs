@@ -35,7 +35,7 @@ public class ArtsController : BaseApiController
 
         var data = _mapper.Map<IReadOnlyList<ArtDto>>(arts);
         
-        Thread.Sleep(2000);
+        Thread.Sleep(1000);
         
         return Ok(new Pagination<ArtDto>(artRequest.PageIndex, artRequest.PageSize,
             totalArts, data));
@@ -67,11 +67,11 @@ public class ArtsController : BaseApiController
         {
             return BadRequest(new ApiResponse(400, $"User {dto.User} not found"));
         }
-        
+
         var newArt = new Art()
         {
             User = user,
-            Prompt = dto.ArtSetting,
+            ArtSetting = dto.ArtSetting.ToJsonString(),
             Title = dto.Title
         };
 
@@ -90,7 +90,6 @@ public class ArtsController : BaseApiController
         {
             return NotFound(new ApiResponse(404, $"Art {dto.Id} not found"));
         }
-        
 
         if (updatedArt == null)
             throw new ArgumentNullException(nameof(updatedArt), $"Art with id: {art.Id} cannot be updated");
