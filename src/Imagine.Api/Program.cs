@@ -6,6 +6,7 @@ using Imagine.Infrastructure.Data.AutoMapper;
 using Imagine.Infrastructure.Data.Configurations;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 {
@@ -15,11 +16,16 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<ArtDbContext>(x => x
     .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     .EnableSensitiveDataLogging());
-
+builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+{
+    var configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("RedisConnection") ?? string.Empty,
+        true);
+    return ConnectionMultiplexer.Connect(configuration);
+});
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddCustomAutoMapper();

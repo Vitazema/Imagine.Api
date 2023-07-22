@@ -12,14 +12,17 @@ public class ArtsController : BaseApiController
 {
     private readonly IRepository<Art> _artsRepository;
     private readonly IRepository<User> _usersRepository;
+    private readonly IPermissionRepository _permissionRepository;
     private readonly IMapper _mapper;
 
     public ArtsController(IRepository<Art> artsRepository, IRepository<User> usersRepository,
+        IPermissionRepository permissionRepository,
         IMapper mapper
     )
     {
         this._artsRepository = artsRepository;
         _usersRepository = usersRepository;
+        _permissionRepository = permissionRepository;
         _mapper = mapper;
     }
 
@@ -57,7 +60,6 @@ public class ArtsController : BaseApiController
     [HttpPost]
     public async Task<ActionResult<ArtDto>> AddArt([FromBody] ArtDto dto)
     {
-        Thread.Sleep(2000);
         
         var user = _usersRepository
             .ListAllAsync()
@@ -74,6 +76,14 @@ public class ArtsController : BaseApiController
             ArtSetting = dto.ArtSetting.ToJsonString(),
             Title = dto.Title
         };
+        
+        var userPermission = await _permissionRepository.GetPermissionsAsync(user.FullName);
+        var permission = userPermission?.Permissions.FirstOrDefault();
+        if (permission != null) permission.Credentials -= 10;
+        await _permissionRepository.UpsertPermissionsAsync(userPermission);
+        
+        // todo: immitating generation 
+        Thread.Sleep(2000);
 
         var artResult = await _artsRepository.AddAsync(newArt);
         var artDto = _mapper.Map<Art, ArtDto>(artResult);

@@ -10,8 +10,9 @@ public static class ApplicationServicesExtensions
     // Add services to the container.
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IArtRepository, ArtRepository>();
+        services.AddScoped<IPermissionRepository, PermissionRepository>();
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         services.Configure<ApiBehaviorOptions>(options =>
         {
