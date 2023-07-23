@@ -15,31 +15,33 @@ public class PermissionRepository : IPermissionRepository
         _database = redis.GetDatabase();
     }
 
-    public async Task<UserPermissions> GetPermissionsAsync(string id)
+    public async Task<Permission> GetPermissionsAsync(string userName)
     {
-        var data = await _database.StringGetAsync(id);
+        if (userName == null) return null;
+        
+        var data = await _database.StringGetAsync(userName);
         if (data.IsNullOrEmpty)
         {
-            var permissions = new UserPermissions(id);
-            permissions.Permissions.Add(new Permission()
+            var permissions = new Permission()
             {
-                Id = 0,
+                UserName = userName,
                 Action = "any",
                 Resource = "any",
                 QueryLimit = -1,
                 Credentials = -1
-            });
+            };
             return permissions;
         }
+        
 
-        return JsonSerializer.Deserialize<UserPermissions>(data);
+        return JsonSerializer.Deserialize<Permission>(data);
     }
 
-    public async Task<UserPermissions> UpsertPermissionsAsync(UserPermissions userPermission)
+    public async Task<Permission> UpsertPermissionsAsync(Permission userPermission)
     {
-        var created = await _database.StringSetAsync(userPermission.Id,
+        var created = await _database.StringSetAsync(userPermission.UserName,
             JsonSerializer.Serialize(userPermission), _defaultExpirationTime);
-        return !created ? null : await GetPermissionsAsync(userPermission.Id);
+        return !created ? null : await GetPermissionsAsync(userPermission.UserName);
     }
 
     public async Task<bool> DeletePermissionsAsync(string id)

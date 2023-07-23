@@ -14,14 +14,14 @@ public class PermissionController : BaseApiController
     }
     
     [HttpGet]
-    public async Task<ActionResult<UserPermissions>> GetPermissionsAsync(string id)
+    public async Task<ActionResult<Permission>> GetPermissionsAsync(string id)
     {
         var permissions = await _permissionRepository.GetPermissionsAsync(id);
         return Ok(permissions);
     }
     
     [HttpPost]
-    public async Task<ActionResult<UserPermissions>> UpsertPermissionsAsync(UserPermissions userPermissions)
+    public async Task<ActionResult<Permission>> UpsertPermissionsAsync(Permission userPermissions)
     {
         var permissions = await _permissionRepository.UpsertPermissionsAsync(userPermissions);
         return Ok(permissions);

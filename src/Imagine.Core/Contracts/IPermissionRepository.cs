@@ -4,7 +4,7 @@ namespace Imagine.Core.Contracts;
 
 public interface IPermissionRepository
 {
-    Task<UserPermissions> GetPermissionsAsync(string id);
-    Task<UserPermissions> UpsertPermissionsAsync(UserPermissions userPermission);
+    Task<Permission> GetPermissionsAsync(string userName);
+    Task<Permission> UpsertPermissionsAsync(Permission userPermission);
     Task<bool> DeletePermissionsAsync(string id);
 }

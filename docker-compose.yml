@@ -1,15 +1,17 @@
 version: '3.9'
 
-services: 
+services:
   imagine-api:
     image: ${DC_IMAGE_NAME}:${DC_IMAGE_TAG}
     container_name: imagine-api
     build:
-      context: .      
+      context: .
     ports:
       - "5000:5000"
     depends_on:
       imagine-database:
+        condition: service_healthy
+      imagine-redis:
         condition: service_healthy
     restart: unless-stopped
     environment:
@@ -23,29 +25,50 @@ services:
       start_period: 20s
 
   imagine-database:
-   image: postgres
-   container_name: imagine-database
-   ports:
-     - "5432:5432"
-   environment:
-     POSTGRES_DB: artdb
-     POSTGRES_USER: postgres
-     POSTGRES_PASSWORD: Strongpassword!
-     PGDATA: "/var/lib/postgresql/data/pgdata"
-   volumes:
-     - ~/imagine/postgres/scripts:/docker-entrypoint-initdb.d
-     - ~/imagine/postgres:/var/lib/postgresql/data
-   restart: unless-stopped
-   healthcheck:
-     test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-     interval: 5s
-     timeout: 5s
-     retries: 10
-   deploy:
-     resources:
-       limits:
-         cpus: "2"
-         memory: 2G
+    image: postgres
+    container_name: imagine-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: artdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Strongpassword!
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ~/imagine/postgres/scripts:/docker-entrypoint-initdb.d
+      - ~/imagine/postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+
+  imagine-redis:
+    image: redis
+    container_name: imagine-redis
+    restart: unless-stopped
+    command: [ "redis-server", "--appendonly", "yes" ]
+    volumes:
+      - ~/imagine/redis:/data
+    ports:
+      - "6379:6379"
+
+  imagine-redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: imagine-redis-commander
+    restart: unless-stopped
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - imagine-redis
 
 networks:
   default:

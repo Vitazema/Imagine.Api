@@ -78,8 +78,7 @@ public class ArtsController : BaseApiController
         };
         
         var userPermission = await _permissionRepository.GetPermissionsAsync(user.FullName);
-        var permission = userPermission?.Permissions.FirstOrDefault();
-        if (permission != null) permission.Credentials -= 10;
+        if (userPermission != null) userPermission.Credentials -= 10;
         await _permissionRepository.UpsertPermissionsAsync(userPermission);
         
         // todo: immitating generation 
