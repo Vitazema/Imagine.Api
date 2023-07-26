@@ -1,9 +1,9 @@
 using HealthChecks.UI.Client;
 using Imagine.Api.Extensions;
+using Imagine.Api.Infrastructure.AutoMapper;
 using Imagine.Api.Middleware;
-using Imagine.Infrastructure.Data;
-using Imagine.Infrastructure.Data.AutoMapper;
-using Imagine.Infrastructure.Data.Configurations;
+using Imagine.Core.Configurations;
+using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
     ApplicationName = typeof(Program).Assembly.FullName
 });
 
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
+builder.Services.Configure<WorkersSettings>(builder.Configuration.GetSection(nameof(WorkersSettings)));
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ArtDbContext>(x => x
     .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -31,7 +32,7 @@ builder.Services.AddSwaggerDocumentation();
 builder.Services.AddCustomAutoMapper();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
@@ -69,8 +70,6 @@ app.UseCors();
 //     Apply an authorization policy before UseEndpoints dispatches to the endpoint.
 app.UseAuthorization();
 // app.UseAuthentication();
-
-
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();

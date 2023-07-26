@@ -38,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Imagine.Infrastructure\Imagine.Infrastructure.csproj" />
+        <ProjectReference Include="..\Imagine.Infrastructure.Persistence\Imagine.Infrastructure.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

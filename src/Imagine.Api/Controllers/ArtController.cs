@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Imagine.Api.Errors;
 using Imagine.Api.Helpers;
+using Imagine.Api.Queue;
+using Imagine.Api.Services;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
 using Imagine.Core.Specifications;
@@ -13,18 +15,25 @@ public class ArtsController : BaseApiController
     private readonly IRepository<Art> _artsRepository;
     private readonly IRepository<User> _usersRepository;
     private readonly IPermissionRepository _permissionRepository;
+    private readonly AiService _aiService;
+    private readonly ITaskProgressService _taskProgressService;
     private readonly IMapper _mapper;
 
     public ArtsController(IRepository<Art> artsRepository, IRepository<User> usersRepository,
         IPermissionRepository permissionRepository,
+        AiService aiService,
+        ITaskProgressService taskProgressService,
         IMapper mapper
     )
     {
         this._artsRepository = artsRepository;
         _usersRepository = usersRepository;
         _permissionRepository = permissionRepository;
+        _aiService = aiService;
+        _taskProgressService = taskProgressService;
         _mapper = mapper;
     }
+
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ArtDto>>> GetArts([FromQuery] ArtSpecRequest artRequest)
@@ -80,9 +89,13 @@ public class ArtsController : BaseApiController
         var userPermission = await _permissionRepository.GetPermissionsAsync(user.FullName);
         if (userPermission != null) userPermission.Credentials -= 10;
         await _permissionRepository.UpsertPermissionsAsync(userPermission);
-        
-        // todo: immitating generation 
-        Thread.Sleep(2000);
+
+        var taskId = await _aiService.GenerateAsync(newArt);
+
+        if (taskId == Guid.Empty)
+        {
+            return BadRequest(new ApiResponse(500, $"Worker error: Art {dto.Id} cannot be generated"));
+        }
 
         var artResult = await _artsRepository.AddAsync(newArt);
         var artDto = _mapper.Map<Art, ArtDto>(artResult);

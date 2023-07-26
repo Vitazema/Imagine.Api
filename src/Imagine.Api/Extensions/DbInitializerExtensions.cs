@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
+using Imagine.Core.Configurations;
 using Imagine.Core.Entities;
-using Imagine.Infrastructure.Data;
-using Imagine.Infrastructure.Data.Configurations;
+using Imagine.Infrastructure;
+using Imagine.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

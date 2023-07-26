@@ -4,6 +4,7 @@ namespace Imagine.Core.Entities;
 
 public class Art : BaseEntity
 {
+    public Guid TaskId { get; set; }
     public string Title { get; set; }
     public string Url { get; set; }
     public int Progress { get; set; }

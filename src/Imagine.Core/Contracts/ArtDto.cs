@@ -8,10 +8,12 @@ namespace Imagine.Core.Contracts;
 public record ArtDto : IValidatableObject
 {
     public int Id { get; set; }
+    public Guid TaskId { get; set; }
     public string Title { get; set; }
     public string Url { get; set; }
-    [Range(0, 100)] public int Progress { get; set; }
+    // [Range(0, 100)] public int Progress { get; set; }
     public DateTime CreatedAt { get; set; }
+    
     [Required] public string User { get; set; }
     [Required] public ArtType ArtType { get; set; }
     [Required] public JsonNode ArtSetting { get; set; }

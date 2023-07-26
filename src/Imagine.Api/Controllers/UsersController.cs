@@ -1,6 +1,7 @@
 ﻿using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
-using Imagine.Infrastructure.Data;
+using Imagine.Infrastructure;
+using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;

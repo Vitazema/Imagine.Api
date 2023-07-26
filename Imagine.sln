@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Api", "src\Imagine.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Core", "src\Imagine.Core\Imagine.Core.csproj", "{ECAA46C0-CE90-4CE4-9EE0-C45C012B0E0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Infrastructure", "src\Imagine.Infrastructure\Imagine.Infrastructure.csproj", "{E0A6BA45-9B94-4813-8C11-5827E1497C1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Infrastructure.Persistence", "src\Imagine.Infrastructure.Persistence\Imagine.Infrastructure.Persistence.csproj", "{E0A6BA45-9B94-4813-8C11-5827E1497C1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
