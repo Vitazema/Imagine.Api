@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 COPY Imagine.sln ./
 COPY ["src/Imagine.Api/Imagine.Api.csproj", "./src/Imagine.Api/"]
-COPY ["src/Imagine.Infrastructure/Imagine.Infrastructure.csproj", "./src/Imagine.Infrastructure/"]
+COPY ["src/Imagine.Infrastructure/Imagine.Infrastructure.Persistence.csproj", "./src/Imagine.Infrastructure.Persistence/"]
 COPY ["src/Imagine.Core/Imagine.Core.csproj", "./src/Imagine.Core/"]
 RUN dotnet restore
 COPY . .
