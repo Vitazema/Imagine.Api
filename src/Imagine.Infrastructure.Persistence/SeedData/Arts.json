@@ -4,7 +4,6 @@
     "Title": "a man in a spacesuit on a horse and blue hat",
     "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp.png",
     "Progress": 100,
-    "UserId": 1,
     "CreatedAt": "2023-02-15T19:41:35",
     "Model": "SD_1.5",
     "ArtType": "Avatar",
@@ -16,7 +15,6 @@
     "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp2.png",
     "Progress": 50,
     "CreatedAt": "2023-02-17T12:41:35",
-    "UserId": 2,
     "Model": "SD_1.5",
     "ArtType": "Avatar",
     "ArtSetting": "{\"enable_hr\":false,\"denoising_strength\":0,\"firstphase_width\":0,\"firstphase_height\":0,\"hr_scale\":2,\"hr_upscaler\":\"\",\"hr_second_pass_steps\":0,\"hr_resize_x\":0,\"hr_resize_y\":0,\"prompt\":\"aqubeonatable\",\"styles\":[],\"seed\":-1,\"subseed\":-1,\"subseed_strength\":0,\"seed_resize_from_h\":-1,\"seed_resize_from_w\":-1,\"sampler_name\":\"Eulera\",\"batch_size\":1,\"n_iter\":4,\"steps\":10,\"cfg_scale\":7,\"width\":576,\"height\":576,\"restore_faces\":false,\"tiling\":false,\"negative_prompt\":\"blurry\",\"eta\":0,\"s_churn\":0,\"s_tmax\":0,\"s_tmin\":0,\"s_noise\":1,\"override_settings\":{},\"override_settings_restore_afterwards\":true,\"script_args\":[],\"sampler_index\":\"DPM++2SaKarras\",\"script_name\":\"\",\"title\":\"\"}"
@@ -27,7 +25,6 @@
     "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp2.png",
     "Progress": 100,
     "CreatedAt": "2023-02-17T12:41:35",
-    "UserId": 2,
     "Model": "SD_1.5",
     "ArtType": "Txt2Img",
     "ArtSetting": "{\"enable_hr\":false,\"denoising_strength\":0,\"firstphase_width\":0,\"firstphase_height\":0,\"hr_scale\":2,\"hr_upscaler\":\"\",\"hr_second_pass_steps\":0,\"hr_resize_x\":0,\"hr_resize_y\":0,\"prompt\":\"asimpleball\",\"styles\":[],\"seed\":-1,\"subseed\":-1,\"subseed_strength\":0,\"seed_resize_from_h\":-1,\"seed_resize_from_w\":-1,\"sampler_name\":\"Eulera\",\"batch_size\":1,\"n_iter\":4,\"steps\":10,\"cfg_scale\":7,\"width\":576,\"height\":576,\"restore_faces\":false,\"tiling\":false,\"negative_prompt\":\"blurry\",\"eta\":0,\"s_churn\":0,\"s_tmax\":0,\"s_tmin\":0,\"s_noise\":1,\"override_settings\":{},\"override_settings_restore_afterwards\":true,\"script_args\":[],\"sampler_index\":\"DPM++2SaKarras\",\"script_name\":\"\",\"title\":\"\"}"

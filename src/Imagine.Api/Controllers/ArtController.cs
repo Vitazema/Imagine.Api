@@ -2,6 +2,7 @@
 using Imagine.Api.Errors;
 using Imagine.Api.Helpers;
 using Imagine.Api.Services;
+using Imagine.Auth.Repository;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
 using Imagine.Core.Specifications;
@@ -12,12 +13,12 @@ namespace Imagine.Api.Controllers;
 public class ArtsController : BaseApiController
 {
     private readonly IRepository<Art> _artsRepository;
-    private readonly IRepository<User> _usersRepository;
+    private readonly IUserRepository _usersRepository;
     private readonly IPermissionRepository _permissionRepository;
     private readonly AiService _aiService;
     private readonly IMapper _mapper;
 
-    public ArtsController(IRepository<Art> artsRepository, IRepository<User> usersRepository,
+    public ArtsController(IRepository<Art> artsRepository, IUserRepository usersRepository,
         IPermissionRepository permissionRepository,
         AiService aiService,
         IMapper mapper
@@ -65,10 +66,7 @@ public class ArtsController : BaseApiController
     [HttpPost]
     public async Task<ActionResult<ArtDto>> AddArt([FromBody] ArtDto dto)
     {
-        var user = _usersRepository
-            .ListAllAsync()
-            .Result
-            .FirstOrDefault(x => x.FullName == dto.User);
+        var user = await _usersRepository.GetUserAsync(dto.User);
 
         if (user == null)
         {
@@ -82,7 +80,7 @@ public class ArtsController : BaseApiController
             Title = dto.Title
         };
 
-        await _permissionRepository.EditCredentialsAsync(user.FullName, -10);
+        await _permissionRepository.EditCredentialsAsync(user.UserName, -10);
 
         var taskId = await _aiService.GenerateAsync(newArt);
 

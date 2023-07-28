@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
+using Imagine.Core.Entities.Identity;
 using Imagine.Infrastructure.Persistence;
 
 namespace Imagine.Api.Infrastructure.AutoMapper;
@@ -18,7 +19,7 @@ public class UserResolver : IValueResolver<ArtDto, Art, User>
     {
         return new User()
         {
-            FullName = source.User
+            UserName = source.User
         };
     }
 }

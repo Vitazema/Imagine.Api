@@ -1,21 +1,25 @@
-﻿using Imagine.Core.Entities;
+﻿using Imagine.Core.Entities.Identity;
 using Imagine.Infrastructure.Persistence;
 
 namespace Imagine.Auth.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private readonly ArtDbContext _dbContext;
+    private readonly UserIdentityDbContext _userDbContext;
 
-    public UserRepository(ArtDbContext dbContext)
+    public UserRepository(UserIdentityDbContext userDbContext)
     {
-        _dbContext = dbContext;
+        _userDbContext = userDbContext;
     }
-    public async Task<User?> GetUserAsync(string userId)
+    public async Task<User?> GetUserAsync(string userName)
     {
-        var isParsed = int.TryParse(userId, out var intId);
-        if (!isParsed) throw new ArgumentException("Id must be an integer", nameof(userId));
-        var user = await _dbContext.Users.FindAsync(intId);
+        var user = _userDbContext.Users.FirstOrDefault(u => u.UserName == userName);
+        return user;
+    }
+
+    public async Task<User?> GetUserByIdAsync(string userId)
+    {
+        var user = await _userDbContext.Users.FindAsync(userId);
         return user;
     }
 }

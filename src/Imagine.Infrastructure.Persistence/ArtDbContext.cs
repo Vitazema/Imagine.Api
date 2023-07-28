@@ -1,5 +1,6 @@
 ﻿using Imagine.Core.Configurations;
 using Imagine.Core.Entities;
+using Imagine.Core.Entities.Identity;
 using Imagine.Infrastructure.Persistence.TypeConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -16,12 +17,10 @@ public class ArtDbContext : DbContext
     }
 
     public DbSet<Art> Arts { get; set; }
-    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new ArtEntityTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration(_appSettings));
     }
 }

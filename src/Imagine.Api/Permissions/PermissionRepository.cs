@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using Imagine.Auth.Repository;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
+using Imagine.Core.Entities.Identity;
 using StackExchange.Redis;
 using Role = Imagine.Core.Entities.Role;
 
@@ -19,7 +19,7 @@ public class PermissionRepository : IPermissionRepository
 
     public async Task<UserPermission> GetPermissionsAsync(User user)
     {
-        var userName = user?.FullName;
+        var userName = user?.UserName;
         if (userName == null) return null;
         
         var data = await _database.StringGetAsync(userName);

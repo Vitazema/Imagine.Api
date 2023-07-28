@@ -1,4 +1,5 @@
 ﻿using Imagine.Core.Entities;
+using Imagine.Core.Entities.Identity;
 
 namespace Imagine.Core.Contracts;
 

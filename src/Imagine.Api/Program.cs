@@ -21,19 +21,27 @@ builder.Services.AddControllers(c => c.Filters.Add<PermissionsCheckServiceFilter
 builder.Services.AddDbContext<ArtDbContext>(x => x
     .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     .EnableSensitiveDataLogging());
+builder.Services.AddDbContext<UserIdentityDbContext>(x =>
+    x.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnection")));
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
-    var configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("RedisConnection") ?? string.Empty,
+    var configuration = ConfigurationOptions.Parse(
+        builder.Configuration.GetConnectionString("RedisConnection") ?? string.Empty,
         true);
     return ConnectionMultiplexer.Connect(configuration);
 });
+
+builder.Services.AddIdentityServices();
+builder.Services.AddApplicationServices(builder.Configuration);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddCustomAutoMapper();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
-builder.Services.AddApplicationServices(builder.Configuration);
+
+
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Imagine.Core.Entities.Identity;
 
 namespace Imagine.Core.Entities;
 
@@ -9,7 +10,6 @@ public class Art : BaseEntity
     public string Url { get; set; }
     public int Progress { get; set; }
     public User User { get; set; }
-    public int UserId { get; set; }
     public string Model { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ArtType Type { get; set; }
