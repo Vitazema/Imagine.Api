@@ -1,29 +1,33 @@
-﻿using Imagine.Core.Contracts;
+﻿using Imagine.Auth.Repository;
+using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
-using Imagine.Infrastructure;
-using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;
 
 public class UsersController : BaseApiController
 {
-    private readonly ArtDbContext _artContext;
+    private readonly IUserRepository _userRepository;
     private readonly IPermissionRepository _permissionRepository;
 
-    public UsersController(ArtDbContext artContext, IPermissionRepository permissionRepository)
+    public UsersController(IUserRepository userRepository,
+        IPermissionRepository permissionRepository)
     {
-        _artContext = artContext;
+        _userRepository = userRepository;
         _permissionRepository = permissionRepository;
     }
     
     [HttpGet]
     public async Task<ActionResult<User>> GetUserAsync([FromQuery]string id)
     {
-        var isParsed = int.TryParse(id, out var intId);
-        if (!isParsed) return BadRequest("Id must be an integer");
-        var user = await _artContext.Users.FindAsync(intId);
-        return Ok(user);
+        return Ok(await _userRepository.GetUserAsync(id));
     }
     
+    [HttpGet("permissions")]
+    public async Task<ActionResult<UserPermission>> GetPermissionsAsync([FromQuery]string userId)
+    {
+        var user = await _userRepository.GetUserAsync(userId);
+        var permissions = await _permissionRepository.GetPermissionsAsync(user);
+        return Ok(permissions);
+    }
 }

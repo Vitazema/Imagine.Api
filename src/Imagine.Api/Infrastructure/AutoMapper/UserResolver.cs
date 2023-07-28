@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
-using Imagine.Infrastructure;
 using Imagine.Infrastructure.Persistence;
 
 namespace Imagine.Api.Infrastructure.AutoMapper;

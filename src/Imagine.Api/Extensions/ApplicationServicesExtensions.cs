@@ -1,9 +1,10 @@
 ﻿using Imagine.Api.Errors;
+using Imagine.Api.Permissions;
 using Imagine.Api.Queue;
 using Imagine.Api.Services;
+using Imagine.Auth.Repository;
 using Imagine.Core.Configurations;
 using Imagine.Core.Contracts;
-using Imagine.Infrastructure;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +19,9 @@ public static class ApplicationServicesExtensions
         var appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
 
         services.AddHttpClient();
-        
+
         services.AddScoped<IArtRepository, ArtRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPermissionRepository, PermissionRepository>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
@@ -29,6 +31,9 @@ public static class ApplicationServicesExtensions
         services.AddHostedService<AiServiceQueue>();
         services.AddSingleton<IBackgroundTaskQueue>(_ => new AiBackgroundTaskQueue(
             appSettings.QueueCapacity));
+
+        services.AddScoped<IPermissionChecker, PermissionChecker>();
+        services.AddScoped(x => new Lazy<IPermissionChecker>(x.GetRequiredService<IPermissionChecker>));
 
         services.Configure<ApiBehaviorOptions>(options =>
         {

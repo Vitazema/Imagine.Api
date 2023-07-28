@@ -3,17 +3,20 @@ using System;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Imagine.Infrastructure.Migrations
+namespace Imagine.Infrastructure.Persistence.Data.Migrations
 {
     [DbContext(typeof(ArtDbContext))]
-    partial class ArtDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230728175635_dsfsdf")]
+    partial class dsfsdf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,7 +87,7 @@ namespace Imagine.Infrastructure.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("text");
 
-                    b.Property<int>("Role")
+                    b.Property<int>("UserType")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -95,37 +98,37 @@ namespace Imagine.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 7, 28, 18, 11, 8, 988, DateTimeKind.Utc).AddTicks(2086),
+                            CreatedAt = new DateTime(2023, 7, 28, 17, 56, 35, 687, DateTimeKind.Utc).AddTicks(3649),
                             FullName = "System",
-                            Role = 0
+                            UserType = 0
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 7, 28, 18, 11, 8, 988, DateTimeKind.Utc).AddTicks(2297),
+                            CreatedAt = new DateTime(2023, 7, 28, 17, 56, 35, 687, DateTimeKind.Utc).AddTicks(3843),
                             FullName = "Guest",
-                            Role = 1
+                            UserType = 1
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 7, 28, 18, 11, 8, 988, DateTimeKind.Utc).AddTicks(2314),
+                            CreatedAt = new DateTime(2023, 7, 28, 17, 56, 35, 687, DateTimeKind.Utc).AddTicks(3870),
                             FullName = "UserName",
-                            Role = 2
+                            UserType = 2
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 7, 28, 18, 11, 8, 988, DateTimeKind.Utc).AddTicks(2335),
+                            CreatedAt = new DateTime(2023, 7, 28, 17, 56, 35, 687, DateTimeKind.Utc).AddTicks(3884),
                             FullName = "TrialUser",
-                            Role = 3
+                            UserType = 3
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2023, 7, 28, 18, 11, 8, 988, DateTimeKind.Utc).AddTicks(2348),
+                            CreatedAt = new DateTime(2023, 7, 28, 17, 56, 35, 687, DateTimeKind.Utc).AddTicks(3899),
                             FullName = "PaidUser",
-                            Role = 4
+                            UserType = 4
                         });
                 });
 

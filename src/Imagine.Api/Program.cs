@@ -2,6 +2,7 @@ using HealthChecks.UI.Client;
 using Imagine.Api.Extensions;
 using Imagine.Api.Infrastructure.AutoMapper;
 using Imagine.Api.Middleware;
+using Imagine.Api.Mvc;
 using Imagine.Core.Configurations;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -16,7 +17,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
 builder.Services.Configure<WorkersSettings>(builder.Configuration.GetSection(nameof(WorkersSettings)));
-builder.Services.AddControllers();
+builder.Services.AddControllers(c => c.Filters.Add<PermissionsCheckServiceFilter>());
 builder.Services.AddDbContext<ArtDbContext>(x => x
     .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     .EnableSensitiveDataLogging());

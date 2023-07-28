@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Core", "src\Imagine
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Infrastructure.Persistence", "src\Imagine.Infrastructure.Persistence\Imagine.Infrastructure.Persistence.csproj", "{E0A6BA45-9B94-4813-8C11-5827E1497C1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imagine.Auth", "Imagine.Auth\Imagine.Auth.csproj", "{926CE606-E0E8-49CC-A8BC-03FCFABB8DCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{E0A6BA45-9B94-4813-8C11-5827E1497C1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0A6BA45-9B94-4813-8C11-5827E1497C1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0A6BA45-9B94-4813-8C11-5827E1497C1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{926CE606-E0E8-49CC-A8BC-03FCFABB8DCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{926CE606-E0E8-49CC-A8BC-03FCFABB8DCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{926CE606-E0E8-49CC-A8BC-03FCFABB8DCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{926CE606-E0E8-49CC-A8BC-03FCFABB8DCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

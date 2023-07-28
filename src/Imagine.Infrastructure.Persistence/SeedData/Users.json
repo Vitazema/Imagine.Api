@@ -1,10 +1,27 @@
 [
   {
     "Id": 1,
-    "FullName": "System"
+    "FullName": "System",
+    "Role": "System"
   },
   {
     "Id": 2,
-    "FullName": "UserName"
+    "FullName": "Guest",
+    "Role": "Guest"
+  },
+  {
+    "Id": 3,
+    "FullName": "UserName",
+    "Role": "Free"
+  },
+  {
+    "Id": 4,
+    "FullName": "TrialUser",
+    "Role": "Trial"
+  },
+  {
+    "Id": 5,
+    "FullName": "PaidUser",
+    "Role": "Paid"
   }
 ]

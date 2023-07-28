@@ -11,6 +11,7 @@ COPY Imagine.sln ./
 COPY ["src/Imagine.Api/Imagine.Api.csproj", "./src/Imagine.Api/"]
 COPY ["src/Imagine.Infrastructure.Persistence/Imagine.Infrastructure.Persistence.csproj", "./src/Imagine.Infrastructure.Persistence/"]
 COPY ["src/Imagine.Core/Imagine.Core.csproj", "./src/Imagine.Core/"]
+COPY ["src/Imagine.Auth/Imagine.Auth.csproj", "./src/Imagine.Auth/"]
 RUN dotnet restore
 COPY . .
 WORKDIR "/source/src/Imagine.Api"

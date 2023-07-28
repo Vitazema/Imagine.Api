@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Imagine.Api.Errors;
 using Imagine.Api.Helpers;
-using Imagine.Api.Queue;
 using Imagine.Api.Services;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
@@ -16,13 +15,11 @@ public class ArtsController : BaseApiController
     private readonly IRepository<User> _usersRepository;
     private readonly IPermissionRepository _permissionRepository;
     private readonly AiService _aiService;
-    private readonly ITaskProgressService _taskProgressService;
     private readonly IMapper _mapper;
 
     public ArtsController(IRepository<Art> artsRepository, IRepository<User> usersRepository,
         IPermissionRepository permissionRepository,
         AiService aiService,
-        ITaskProgressService taskProgressService,
         IMapper mapper
     )
     {
@@ -30,7 +27,6 @@ public class ArtsController : BaseApiController
         _usersRepository = usersRepository;
         _permissionRepository = permissionRepository;
         _aiService = aiService;
-        _taskProgressService = taskProgressService;
         _mapper = mapper;
     }
 
@@ -42,13 +38,13 @@ public class ArtsController : BaseApiController
 
         var countSpecification = new ArtWithFiltersForCountSpecification(artRequest);
         var totalArts = await _artsRepository.CountAsync(countSpecification);
-        
+
         var arts = await _artsRepository.ListAsync(specification);
 
         var data = _mapper.Map<IReadOnlyList<ArtDto>>(arts);
-        
+
         Thread.Sleep(1000);
-        
+
         return Ok(new Pagination<ArtDto>(artRequest.PageIndex, artRequest.PageSize,
             totalArts, data));
     }
@@ -62,18 +58,18 @@ public class ArtsController : BaseApiController
         var art = await _artsRepository.GetEntityWithSpec(specification);
 
         if (art == null) return NotFound(new ApiResponse(404));
-        
+
         return Ok(_mapper.Map<Art, ArtDto>(art));
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<ArtDto>> AddArt([FromBody] ArtDto dto)
     {
-        
         var user = _usersRepository
             .ListAllAsync()
             .Result
             .FirstOrDefault(x => x.FullName == dto.User);
+
         if (user == null)
         {
             return BadRequest(new ApiResponse(400, $"User {dto.User} not found"));
@@ -85,10 +81,8 @@ public class ArtsController : BaseApiController
             ArtSetting = dto.ArtSetting.ToJsonString(),
             Title = dto.Title
         };
-        
-        var userPermission = await _permissionRepository.GetPermissionsAsync(user.FullName);
-        if (userPermission != null) userPermission.Credentials -= 10;
-        await _permissionRepository.UpsertPermissionsAsync(userPermission);
+
+        await _permissionRepository.EditCredentialsAsync(user.FullName, -10);
 
         var taskId = await _aiService.GenerateAsync(newArt);
 
@@ -107,7 +101,7 @@ public class ArtsController : BaseApiController
     {
         var art = _mapper.Map<ArtDto, Art>(dto);
         var updatedArt = await _artsRepository.UpdateAsync(art);
-        
+
         if (updatedArt == null)
         {
             return NotFound(new ApiResponse(404, $"Art {dto.Id} not found"));
@@ -115,10 +109,10 @@ public class ArtsController : BaseApiController
 
         if (updatedArt == null)
             throw new ArgumentNullException(nameof(updatedArt), $"Art with id: {art.Id} cannot be updated");
-        
+
         return Ok(updatedArt);
     }
-    
+
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<ArtDto>> DeleteArt(int id)
     {
@@ -133,6 +127,7 @@ public class ArtsController : BaseApiController
         {
             return BadRequest(new ApiResponse(400, $"No art with {id}"));
         }
+
         return Ok();
     }
 }

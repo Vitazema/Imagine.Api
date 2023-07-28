@@ -35,6 +35,7 @@ public class StringToJson // Replace with your actual class name
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return null;
         }
     }

@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
+using Imagine.Api.Constants;
 using Imagine.Api.Errors;
 using Imagine.Api.Services;
 using Imagine.Core.Configurations;
 using Imagine.Core.Contracts;
+using Imagine.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -12,7 +14,7 @@ public class ProgressController : BaseApiController
 {
     private readonly ITaskProgressService _taskProgressService;
     private readonly IOptions<WorkersSettings> _workerSettings;
-    private static readonly HttpClient _httpClient = new HttpClient();
+    private static readonly HttpClient HttpClient = new();
 
     public ProgressController(ITaskProgressService taskProgressService, IOptions<WorkersSettings> workerSettings)
     {
@@ -21,6 +23,7 @@ public class ProgressController : BaseApiController
     }
         
     [HttpGet("{taskId:guid}")]
+    [Permission(ActionConstants.ReadTask)]
     public async Task<ActionResult<AiTaskDto>> GetTaskProgress(Guid taskId)
     {
         var aiTask = _taskProgressService.GetProgress(taskId);
@@ -37,7 +40,7 @@ public class ProgressController : BaseApiController
         }
         
         var sdProgressRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"http://{workerAddress}/sdapi/v1/progress");
-        var response = await _httpClient.SendAsync(sdProgressRequestMessage);
+        var response = await HttpClient.SendAsync(sdProgressRequestMessage);
         
         if (!response.IsSuccessStatusCode)
         {

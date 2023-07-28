@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Imagine.Api.Queue;
+﻿using Imagine.Api.Queue;
 
 namespace Imagine.Api.Services;
 

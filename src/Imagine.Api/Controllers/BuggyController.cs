@@ -1,5 +1,4 @@
 ﻿using Imagine.Api.Errors;
-using Imagine.Infrastructure;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
