@@ -1,5 +1,5 @@
 ﻿using Imagine.Auth.Repository;
-using Imagine.Core.Contracts;
+using Imagine.Core.Interfaces;
 
 namespace Imagine.Api.Permissions;
 
@@ -24,7 +24,8 @@ public class PermissionChecker : IPermissionChecker
     public async Task<bool> HasPermission(string resourceCategory, string action, IReadOnlyCollection<string> resourceIds, bool skipResourcesCheck)
     {
         // todo: get user id from context (request header)
-        var currentUser = await _userRepository.GetUserAsync("1");
+        
+        var currentUser = await _userRepository.GetUserAsync("System");
         
         var userPermissions = await _permissionRepository.GetPermissionsAsync(currentUser);
         var resourcePermissionChecker = await this.GetChecker(userPermissions.Resource);

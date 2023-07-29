@@ -31,7 +31,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
     return ConnectionMultiplexer.Connect(configuration);
 });
 
-builder.Services.AddIdentityServices();
+builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -77,8 +77,8 @@ app.UseCors();
 //
 // See which endpoint was selected by UseRouting.
 //     Apply an authorization policy before UseEndpoints dispatches to the endpoint.
+app.UseAuthentication();
 app.UseAuthorization();
-// app.UseAuthentication();
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();

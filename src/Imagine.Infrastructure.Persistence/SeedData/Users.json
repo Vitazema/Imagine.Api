@@ -1,7 +1,10 @@
 [
   {
     "UserName": "System",
-    "Role": "System"
+    "Role": "System",
+    "Subscription": {
+      "ExpiresAt": "2050-12-31T23:59:59.9999999Z"
+    }
   },
   {
     "UserName": "Guest",

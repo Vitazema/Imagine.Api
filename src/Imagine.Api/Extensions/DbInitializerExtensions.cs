@@ -31,9 +31,9 @@ static class DbInitializerExtensions
         }
         else
         {
-            await IdentityDbContextSeed.SeedUsersAsync(userManager, appSettings);
-            await artContext.Database.MigrateAsync();
             await identityContext.Database.MigrateAsync();
+            await artContext.Database.MigrateAsync();
+            await IdentityDbContextSeed.SeedUsersAsync(userManager, appSettings);
         }
     }
 

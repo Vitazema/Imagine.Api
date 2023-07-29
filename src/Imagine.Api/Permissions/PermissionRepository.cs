@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
 using Imagine.Core.Entities.Identity;
+using Imagine.Core.Interfaces;
 using StackExchange.Redis;
 using Role = Imagine.Core.Entities.Role;
 
@@ -44,7 +44,6 @@ public class PermissionRepository : IPermissionRepository
         var data = await _database.StringGetAsync(userName);
         if (!data.IsNullOrEmpty)
         {
-            
             var permissions = JsonSerializer.Deserialize<UserPermission>(data);
             permissions.Credentials += amount;
             await UpsertPermissionsAsync(permissions);

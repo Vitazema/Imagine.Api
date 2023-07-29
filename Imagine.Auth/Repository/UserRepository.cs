@@ -1,25 +1,92 @@
-﻿using Imagine.Core.Entities.Identity;
-using Imagine.Infrastructure.Persistence;
+﻿using System.Security.Claims;
+using AutoMapper;
+using Imagine.Auth.Extensions;
+using Imagine.Core.Contracts;
+using Imagine.Core.Entities;
+using Imagine.Core.Entities.Identity;
+using Imagine.Core.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace Imagine.Auth.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private readonly UserIdentityDbContext _userDbContext;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _singInManager;
+    private readonly IMapper _mapper;
+    private readonly IPermissionRepository _permissionRepository;
+    private readonly ITokenService _tokenService;
 
-    public UserRepository(UserIdentityDbContext userDbContext)
+    public UserRepository(UserManager<User> userManager,
+        SignInManager<User> singInManager, IMapper mapper, IPermissionRepository permissionRepository, ITokenService tokenService)
     {
-        _userDbContext = userDbContext;
+        _userManager = userManager;
+        _singInManager = singInManager;
+        _mapper = mapper;
+        _permissionRepository = permissionRepository;
+        _tokenService = tokenService;
     }
-    public async Task<User?> GetUserAsync(string userName)
+    
+    public async Task<User?> GetCurrentUserAsync(ClaimsPrincipal user)
     {
-        var user = _userDbContext.Users.FirstOrDefault(u => u.UserName == userName);
+        var userName = user.FindFirstValue(ClaimTypes.Name);
+        if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
+        
+        return await _userManager.FindUserByNameWithSubscriptionAsync(userName); 
+    }
+
+    public async Task<User?> GetUserAsync(string? userName)
+    {
+        if (userName == null)
+        {
+            return null;
+        }
+            
+        var user = await _userManager.FindByNameAsync(userName);
+        
         return user;
     }
 
-    public async Task<User?> GetUserByIdAsync(string userId)
+    public async Task<User?> GetUserByIdAsync(string? userId)
     {
-        var user = await _userDbContext.Users.FindAsync(userId);
+        if (userId == null)
+        {
+            return null;
+        }
+        var user = await _userManager.FindByIdAsync(userId);
         return user;
+    }
+
+    public async Task<UserDto?> Login(string userName)
+    {
+        var user = await _userManager.FindUserByNameWithSubscriptionAsync(userName);
+        {
+            // todo: set no password here
+            // var result = await _singInManager.CheckPasswordSignInAsync(user, "", false);
+            // if (result.Succeeded)
+            // {
+            var userDto = _mapper.Map<User, UserDto>(user);
+            userDto.Permission = await _permissionRepository.GetPermissionsAsync(user);
+            userDto.Token = _tokenService.CreateToken(user);
+
+            return userDto;
+            // };
+        }
+
+        return null;
+    }
+
+    public async Task<UserDto?> RegisterUser(string userName)
+    {
+        var newUser = new User()
+        {
+            UserName = userName,
+            Role = Role.Free
+        };
+        var result = await _userManager.CreateAsync(newUser);
+        var userDto = _mapper.Map<User, UserDto>(newUser);
+        userDto.Permission = await _permissionRepository.GetPermissionsAsync(newUser);
+        userDto.Token = _tokenService.CreateToken(newUser);
+        return !result.Succeeded ? null : userDto;
     }
 }

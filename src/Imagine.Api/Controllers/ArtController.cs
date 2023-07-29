@@ -5,7 +5,11 @@ using Imagine.Api.Services;
 using Imagine.Auth.Repository;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
+using Imagine.Core.Entities.Identity;
+using Imagine.Core.Interfaces;
 using Imagine.Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;
@@ -17,18 +21,19 @@ public class ArtsController : BaseApiController
     private readonly IPermissionRepository _permissionRepository;
     private readonly AiService _aiService;
     private readonly IMapper _mapper;
+    private readonly UserManager<User> _userManager;
 
     public ArtsController(IRepository<Art> artsRepository, IUserRepository usersRepository,
         IPermissionRepository permissionRepository,
         AiService aiService,
-        IMapper mapper
-    )
+        IMapper mapper, UserManager<User> userManager)
     {
         this._artsRepository = artsRepository;
         _usersRepository = usersRepository;
         _permissionRepository = permissionRepository;
         _aiService = aiService;
         _mapper = mapper;
+        _userManager = userManager;
     }
 
 
@@ -50,10 +55,10 @@ public class ArtsController : BaseApiController
             totalArts, data));
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:Guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ArtDto>> GetArt(int id)
+    public async Task<ActionResult<ArtDto>> GetArt(Guid id)
     {
         var specification = new ArtsWithUserAndTypeSpecification(id);
         var art = await _artsRepository.GetEntityWithSpec(specification);
@@ -62,12 +67,12 @@ public class ArtsController : BaseApiController
 
         return Ok(_mapper.Map<Art, ArtDto>(art));
     }
-
+    
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<ArtDto>> AddArt([FromBody] ArtDto dto)
     {
-        var user = await _usersRepository.GetUserAsync(dto.User);
-
+        var user = await _usersRepository.GetCurrentUserAsync(User);
         if (user == null)
         {
             return BadRequest(new ApiResponse(400, $"User {dto.User} not found"));
@@ -112,7 +117,7 @@ public class ArtsController : BaseApiController
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<ArtDto>> DeleteArt(int id)
+    public async Task<ActionResult<ArtDto>> DeleteArt(Guid id)
     {
         var art = await _artsRepository.GetByIdAsync(id);
         if (art == null)

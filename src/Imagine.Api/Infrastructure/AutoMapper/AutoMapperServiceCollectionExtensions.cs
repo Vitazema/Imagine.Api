@@ -7,6 +7,7 @@ public static class AutoMapperServiceCollectionExtensions
     public static void AddCustomAutoMapper(this IServiceCollection services)
     {
         services.AddSingleton<Profile>(new ArtProfile());
+        services.AddSingleton<Profile>(new UserProfile());
         services.AddSingleton(provider => CreateMapperConfiguration(provider).CreateMapper());
     }
     

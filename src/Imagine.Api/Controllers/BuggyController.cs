@@ -1,5 +1,6 @@
 ﻿using Imagine.Api.Errors;
 using Imagine.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;
@@ -43,5 +44,12 @@ public class BuggyController : BaseApiController
     public ActionResult GetValidatedBadRequest(int id)
     {
         return BadRequest();
+    }
+
+    [HttpGet("testauth")]
+    [Authorize]
+    public ActionResult<string> GetSecretText()
+    {
+        return "secret stuff";
     }
 }

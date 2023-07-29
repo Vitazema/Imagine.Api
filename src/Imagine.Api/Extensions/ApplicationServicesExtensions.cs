@@ -4,7 +4,7 @@ using Imagine.Api.Queue;
 using Imagine.Api.Services;
 using Imagine.Auth.Repository;
 using Imagine.Core.Configurations;
-using Imagine.Core.Contracts;
+using Imagine.Core.Interfaces;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,5 @@
 ﻿using Imagine.Core.Configurations;
 using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
 using Imagine.Infrastructure.Persistence.TypeConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

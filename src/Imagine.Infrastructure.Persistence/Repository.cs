@@ -1,5 +1,5 @@
-﻿using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
+﻿using Imagine.Core.Entities;
+using Imagine.Core.Interfaces;
 using Imagine.Core.Specifications;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +14,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         _context = context;
     }
 
-    public async Task<T> GetByIdAsync(int id)
+    public async Task<T> GetByIdAsync(Guid id)
     {
         return await _context.Set<T>().FindAsync(id);
     }
@@ -56,7 +56,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         return entity;
     }
 
-    public async Task<int?> DeleteAsync(int id)
+    public async Task<Guid?> DeleteAsync(Guid id)
     {
         var existedEntity = await _context.Set<T>().FindAsync(id);
         if (existedEntity == null) return null;
