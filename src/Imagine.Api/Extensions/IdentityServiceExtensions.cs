@@ -15,7 +15,7 @@ public static class IdentityServiceExtensions
     {
         var builder = services.AddIdentityCore<User>();
         builder = new IdentityBuilder(builder.UserType, builder.Services);
-        builder.AddEntityFrameworkStores<UserIdentityDbContext>();
+        builder.AddEntityFrameworkStores<ArtDbContext>();
         builder.AddSignInManager<SignInManager<User>>();
 
         services.AddScoped<ITokenService, TokenService>();

@@ -21,8 +21,6 @@ builder.Services.AddControllers(c => c.Filters.Add<PermissionsCheckServiceFilter
 builder.Services.AddDbContext<ArtDbContext>(x => x
     .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     .EnableSensitiveDataLogging());
-builder.Services.AddDbContext<UserIdentityDbContext>(x =>
-    x.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnection")));
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
     var configuration = ConfigurationOptions.Parse(

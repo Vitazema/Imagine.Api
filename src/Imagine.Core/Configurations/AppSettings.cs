@@ -4,8 +4,6 @@ namespace Imagine.Core.Configurations;
 
 public class AppSettings
 {
-    public string ArtsSeedDataFile = "Arts.json";
-
     /// <summary>
     /// Thread safe stored value for ExecutionDirectory
     /// </summary>
