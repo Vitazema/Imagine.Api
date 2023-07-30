@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Imagine.Core\Imagine.Core.csproj" />
-      <ProjectReference Include="..\src\Imagine.Infrastructure.Persistence\Imagine.Infrastructure.Persistence.csproj" />
+      <ProjectReference Include="..\Imagine.Core\Imagine.Core.csproj" />
+      <ProjectReference Include="..\Imagine.Infrastructure.Persistence\Imagine.Infrastructure.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

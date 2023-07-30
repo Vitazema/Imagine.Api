@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Imagine.Auth\Imagine.Auth.csproj" />
+        <ProjectReference Include="..\Imagine.Auth\Imagine.Auth.csproj" />
         <ProjectReference Include="..\Imagine.Infrastructure.Persistence\Imagine.Infrastructure.Persistence.csproj" />
     </ItemGroup>
 
