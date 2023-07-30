@@ -36,12 +36,8 @@ public class StableDiffusionApiService : IAiApiService
         var sdRequestMessage =
             new HttpRequestMessage(HttpMethod.Post, $"http://{workerSetting.Address}/sdapi/v1/{aiType}")
             {
-                Content = new StringContent(JsonSerializer.Serialize(new
-                {
-                    prompt = "Hello, world!",
-                    steps = 50,
-                    sampler_index = "DDIM"
-                }), Encoding.UTF8, "application/json")
+                // Content = new StringContent(JsonSerializer.Serialize(art.ArtSetting), Encoding.UTF8, "application/json")
+                Content = new StringContent(art.ArtSetting, Encoding.UTF8, "application/json")
             };
         
         // _taskProgressService.UpdateTask(art.TaskId, new AiTaskDto()
