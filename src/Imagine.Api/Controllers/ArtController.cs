@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Imagine.Api.Errors;
 using Imagine.Api.Helpers;
+using Imagine.Api.Queue;
 using Imagine.Api.Services;
 using Imagine.Auth.Repository;
 using Imagine.Core.Contracts;
@@ -8,7 +9,6 @@ using Imagine.Core.Entities;
 using Imagine.Core.Entities.Identity;
 using Imagine.Core.Interfaces;
 using Imagine.Core.Specifications;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,21 +19,28 @@ public class ArtsController : BaseApiController
     private readonly IRepository<Art> _artsRepository;
     private readonly IUserRepository _usersRepository;
     private readonly IPermissionRepository _permissionRepository;
-    private readonly AiService _aiService;
+    private readonly IAiService _aiService;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ITaskProgressService _taskProgressService;
+    private readonly IBackgroundTaskQueue _taskQueue;
 
     public ArtsController(IRepository<Art> artsRepository, IUserRepository usersRepository,
         IPermissionRepository permissionRepository,
-        AiService aiService,
-        IMapper mapper, UserManager<User> userManager)
+        IAiService aiService,
+        IMapper mapper, UserManager<User> userManager,
+        IServiceScopeFactory serviceScopeFactory, ITaskProgressService taskProgressService, IBackgroundTaskQueue taskQueue)
     {
-        this._artsRepository = artsRepository;
+        _artsRepository = artsRepository;
         _usersRepository = usersRepository;
         _permissionRepository = permissionRepository;
         _aiService = aiService;
         _mapper = mapper;
         _userManager = userManager;
+        _serviceScopeFactory = serviceScopeFactory;
+        _taskProgressService = taskProgressService;
+        _taskQueue = taskQueue;
     }
 
 
@@ -67,8 +74,8 @@ public class ArtsController : BaseApiController
 
         return Ok(_mapper.Map<Art, ArtDto>(art));
     }
-    
-    [Authorize]
+
+    // [Authorize]
     [HttpPost]
     public async Task<ActionResult<ArtDto>> AddArt([FromBody] ArtDto dto)
     {
@@ -80,22 +87,30 @@ public class ArtsController : BaseApiController
 
         var newArt = new Art()
         {
+            Id = Guid.NewGuid(),
             User = user,
             ArtSetting = dto.ArtSetting.ToJsonString(),
             Title = dto.Title
         };
+        
+        var task = _taskProgressService.GenerateTask(newArt);
+        if (task == null) throw new Exception("Failed to generate task");
 
-        await _permissionRepository.EditCredentialsAsync(user.UserName, -10);
-
-        var taskId = await _aiService.GenerateAsync(newArt);
-
-        if (taskId == Guid.Empty)
+        if (task.TaskId == Guid.Empty)
         {
             return BadRequest(new ApiResponse(500, $"Worker error: Art {dto.Id} cannot be generated"));
         }
+        
+        // Queue a background work item
+        task.Status = AiTaskStatus.Queued;
+        _taskProgressService.UpdateTask(task);
+        await _taskQueue.EnqueueAsync(newArt);
 
         var artResult = await _artsRepository.AddAsync(newArt);
         var artDto = _mapper.Map<Art, ArtDto>(artResult);
+
+        await _permissionRepository.EditCredentialsAsync(user.UserName, -10);
+
         return Created($"/gallery/{artDto.Id}", artDto);
     }
 

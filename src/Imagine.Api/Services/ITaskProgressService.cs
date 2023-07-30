@@ -6,7 +6,7 @@ namespace Imagine.Api.Services;
 public interface ITaskProgressService
 {
     AiTaskDto GenerateTask(Art art);
-    void UpdateProgress(Guid taskId, AiTaskDto progress);
+    void UpdateTask(AiTaskDto task);
     AiTaskDto GetProgress(Guid taskId);
     void RemoveTask(Guid taskId);
 }

@@ -13,14 +13,15 @@ public static class UserManagerExtensions
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
         
         return await input.Users.Include(x => x.Subscription)
-            .SingleOrDefaultAsync(x => x.UserName == userName);
+            .FirstOrDefaultAsync(x => x.UserName == userName);
     }
 
     public static async Task<User?> FindUserByNameWithSubscriptionAsync(this UserManager<User> input,
         string userName)
     {
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
-        return await input.Users.Include(x => x.Subscription)
-            .SingleOrDefaultAsync(x => x.UserName == userName);
+        var user = await input.Users.Include(x => x.Subscription)
+            .FirstOrDefaultAsync(x => x.UserName == userName);
+        return user;
     }
 }

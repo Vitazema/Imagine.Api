@@ -10,7 +10,7 @@ public record ArtDto : IValidatableObject
     public Guid Id { get; set; }
     public Guid TaskId { get; set; }
     public string Title { get; set; }
-    public string Url { get; set; }
+    public List<string> Urls { get; set; }
     public DateTime CreatedAt { get; set; }
     
     [Required] public string User { get; set; }

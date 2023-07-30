@@ -1,43 +1,47 @@
 ﻿using Imagine.Api.Queue;
+using Imagine.Core.Entities;
+using Imagine.Core.Interfaces;
 
 namespace Imagine.Api.Services;
 
-#nullable enable
 public class AiServiceQueue : BackgroundService
 {
+    private readonly IServiceProvider _services;
     private readonly ILogger<AiServiceQueue> _logger;
-    private readonly IHostApplicationLifetime _lifetime;
     private readonly IBackgroundTaskQueue _taskQueue;
 
-    public AiServiceQueue(ILogger<AiServiceQueue> logger, IHostApplicationLifetime lifetime,
+    public AiServiceQueue(IServiceProvider services, ILogger<AiServiceQueue> logger,
         IBackgroundTaskQueue taskQueue)
     {
+        _services = services;
         _logger = logger;
-        _lifetime = lifetime;
         _taskQueue = taskQueue;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        return ProcessTaskQueueAsync(stoppingToken);
-    }
-
-    private async Task ProcessTaskQueueAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            try
+            using (var scope = _services.CreateScope())
             {
-                Func<CancellationToken, ValueTask>? workItem = await _taskQueue.DequeueAsync(stoppingToken);
-                await workItem(stoppingToken);
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogInformation("Background task queue is stopping.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred executing task work item.");
+                try
+                {
+                    var art = await _taskQueue.DequeueAsync(stoppingToken);
+
+                    // var artStorage = scope.ServiceProvider.GetRequiredService<IArtStorage>();
+                    // var artRepository = scope.ServiceProvider.GetRequiredService<IRepository<Art>>();
+                    var aiService = scope.ServiceProvider.GetRequiredService<IAiService>();
+
+                    await aiService.GenerateAsync(stoppingToken, art);
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.LogInformation("Background task queue is stopping.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred executing task work item.");
+                }
             }
         }
     }

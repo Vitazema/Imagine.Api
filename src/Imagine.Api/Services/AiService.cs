@@ -1,53 +1,42 @@
 ﻿using Imagine.Api.Queue;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
+using Imagine.Core.Interfaces;
 
 namespace Imagine.Api.Services;
 
-public class AiService
+public class AiService : IAiService
 {
-    private readonly ILogger<AiService> _logger;
-    private readonly IBackgroundTaskQueue _taskQueue;
     private readonly IAiApiService _aiApiService;
     private readonly ITaskProgressService _taskProgressService;
+    private readonly IArtStorage _artStorage;
+    private readonly IRepository<Art> _artsRepository;
 
-    public AiService(ILogger<AiService> logger, IBackgroundTaskQueue taskQueue,
-        IAiApiService aiApiService, ITaskProgressService taskProgressService)
+    public AiService(IAiApiService aiApiService, ITaskProgressService taskProgressService, IArtStorage artStorage,
+        IRepository<Art> artsRepository
+    )
     {
-        _logger = logger;
-        _taskQueue = taskQueue;
         _aiApiService = aiApiService;
         _taskProgressService = taskProgressService;
+        _artStorage = artStorage;
+        _artsRepository = artsRepository;
     }
 
-    public async Task<Guid> GenerateAsync(Art art)
+    public async Task GenerateAsync(CancellationToken token, Art art)
     {
-        var task = _taskProgressService.GenerateTask(art);
-        if (task != null)
+        var response = await _aiApiService.RequestAsync(art, token);
+        if (response is not null)
         {
-            // Queue a background work item
-            await _taskQueue.QueueBackgroundWorkItemAsync(async token =>
-            {
-                var response = await _aiApiService.RequestAsync(art, token);
-                if (response is not null)
-                {
-                    _logger.LogInformation("Response from worker: {Response}", response);
-                    // todo: update art entity here
-                    // todo: send url images to client
-                }
-            });
-            
-            _taskProgressService.UpdateProgress(task.TaskId, new AiTaskDto()
-            {
-                TaskId = task.TaskId,
-                Progress = 0,
-                Status = AiTaskStatus.Queued,
-                // todo: assign worker from worker pool
-                WorkerId = 0
-            });
-        }
+            var updatedArt = await _artStorage.StoreArtAsync(response, art);
+            var task = _taskProgressService.GetProgress(art.TaskId);
+            task.Progress = 100;
+            task.Status = AiTaskStatus.Completed;
+            _taskProgressService.UpdateTask(task);
 
-        return art.TaskId;
+            // todo: update art entity here
+            var res = await _artsRepository.UpdateAsync(updatedArt);
+            // todo: send url images to client
+        }
     }
 
     // private async ValueTask BuildWorkItemAsync(CancellationToken token)

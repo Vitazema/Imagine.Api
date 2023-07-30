@@ -1,7 +1,9 @@
-﻿namespace Imagine.Api.Queue;
+﻿using Imagine.Core.Entities;
+
+namespace Imagine.Api.Queue;
 
 public interface IBackgroundTaskQueue
 {
-    ValueTask QueueBackgroundWorkItemAsync(Func<CancellationToken, ValueTask> workItem);
-    ValueTask<Func<CancellationToken, ValueTask>> DequeueAsync(CancellationToken cancellationToken);
+    ValueTask EnqueueAsync(Art art);
+    ValueTask<Art> DequeueAsync(CancellationToken cancellationToken);
 }

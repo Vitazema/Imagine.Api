@@ -20,17 +20,18 @@ public static class ApplicationServicesExtensions
 
         services.AddHttpClient();
 
-        services.AddScoped<IArtRepository, ArtRepository>();
+        services.AddScoped<IArtStorage, ArtStorage>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPermissionRepository, PermissionRepository>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         services.AddSingleton<ITaskProgressService, TaskProgressService>();
         services.AddScoped<IAiApiService, StableDiffusionApiService>();
-        services.AddScoped<AiService>();
+        services.AddScoped<IAiService, AiService>();
+        // services.AddSingleton<IBackgroundTaskQueue>(_ => new AiBackgroundTaskQueue(
+        //     appSettings.QueueCapacity));
+        services.AddSingleton<IBackgroundTaskQueue, AiBackgroundTaskQueue>();
         services.AddHostedService<AiServiceQueue>();
-        services.AddSingleton<IBackgroundTaskQueue>(_ => new AiBackgroundTaskQueue(
-            appSettings.QueueCapacity));
 
         services.AddScoped<IPermissionChecker, PermissionChecker>();
         services.AddScoped(x => new Lazy<IPermissionChecker>(x.GetRequiredService<IPermissionChecker>));

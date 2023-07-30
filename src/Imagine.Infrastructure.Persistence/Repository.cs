@@ -43,6 +43,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         var entityToUpdate = await _context.Set<T>().FindAsync(entity.Id);
         if (entityToUpdate == null) return null;
+        
+        _context.Entry(entityToUpdate).State = EntityState.Detached;
         entityToUpdate = entity;
         _context.Entry(entityToUpdate).State = EntityState.Modified;
         await _context.SaveChangesAsync();
@@ -51,9 +53,9 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
 
     public async Task<T> AddAsync(T entity)
     {
-        _context.Set<T>().Add(entity);
+        var addedEntity = await _context.Set<T>().AddAsync(entity);
         await _context.SaveChangesAsync();
-        return entity;
+        return addedEntity.Entity;
     }
 
     public async Task<Guid?> DeleteAsync(Guid id)

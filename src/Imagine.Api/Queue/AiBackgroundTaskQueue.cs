@@ -1,33 +1,30 @@
-﻿using System.Threading.Channels;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Channels;
+using Imagine.Core.Entities;
 
 namespace Imagine.Api.Queue;
-#nullable enable
+
 public class AiBackgroundTaskQueue : IBackgroundTaskQueue
 {
-    private readonly Channel<Func<CancellationToken, ValueTask>> _queue;
+    private readonly Channel<Art> _queue;
 
-    public AiBackgroundTaskQueue(int capacity)
+    public AiBackgroundTaskQueue()
     {
-        BoundedChannelOptions options = new(capacity)
+        BoundedChannelOptions options = new(10)
         {
             FullMode = BoundedChannelFullMode.Wait
         };
-        _queue = Channel.CreateBounded<Func<CancellationToken, ValueTask>>(options);
+        _queue = Channel.CreateBounded<Art>(options);
     }
 
-    public async ValueTask QueueBackgroundWorkItemAsync(Func<CancellationToken, ValueTask> workItem)
+    public async ValueTask EnqueueAsync([NotNull] Art art)
     {
-        if (workItem == null)
-        {
-            throw new ArgumentNullException(nameof(workItem));
-        }
-
-        await _queue.Writer.WriteAsync(workItem);
+        await _queue.Writer.WriteAsync(art);
     }
 
-    public async ValueTask<Func<CancellationToken, ValueTask>> DequeueAsync(CancellationToken cancellationToken)
+    public async ValueTask<Art> DequeueAsync(CancellationToken cancellationToken)
     {
-        Func<CancellationToken, ValueTask>? workItem = await _queue.Reader.ReadAsync(cancellationToken);
-        return workItem;
+        var item = await _queue.Reader.ReadAsync(cancellationToken);
+        return item;
     }
 }

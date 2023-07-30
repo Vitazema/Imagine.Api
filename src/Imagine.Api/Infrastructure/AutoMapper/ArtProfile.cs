@@ -13,7 +13,7 @@ public sealed class ArtProfile : Profile
             .ForMember(a => a.Id, o => o.MapFrom(u => u.Id))
             .ForMember(a => a.TaskId, o => o.MapFrom(u => u.TaskId))
             .ForMember(a => a.User, o => o.MapFrom(u => u.User.UserName))
-            .ForMember(a => a.Url, o => o.MapFrom<ArtUrlResolver>())
+            .ForMember(a => a.Urls, o => o.MapFrom<ArtUrlResolver>())
             .ForMember(a => a.ArtSetting, o => o.MapFrom(a => StringToJson.SerializeArtSetting(a.ArtSetting)));
 
         // CreateMap<ArtDto, Art>()

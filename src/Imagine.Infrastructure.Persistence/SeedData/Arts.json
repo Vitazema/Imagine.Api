@@ -2,7 +2,7 @@
   {
     "Id": "eab17a16-cd88-4e30-8750-1a1f40f1452a",
     "Title": "a man in a spacesuit on a horse and blue hat",
-    "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp.png",
+    "Urls": ["images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp.png"],
     "Progress": 100,
     "CreatedAt": "2023-02-15T19:41:35",
     "Model": "SD_1.5",
@@ -12,7 +12,7 @@
   {
     "Id": "eab17a16-cd88-4e30-8750-1a1f40f1452b",
     "Title": "a man in a spacesuit on a horse",
-    "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp2.png",
+    "Urls": ["images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp2.png"],
     "Progress": 50,
     "CreatedAt": "2023-02-17T12:41:35",
     "Model": "SD_1.5",
@@ -22,7 +22,7 @@
   {
     "Id": "eab17a16-cd88-4e30-8750-1a1f40f1452c",
     "Title": "a spacesuit on a ",
-    "Url": "images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp2.png",
+    "Urls": ["images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp2.png","images/arts/a_man_in_a_spacesuit_on_a_horse_timestamp.png"],
     "Progress": 100,
     "CreatedAt": "2023-02-17T12:41:35",
     "Model": "SD_1.5",

@@ -6,7 +6,7 @@ namespace Imagine.Api.Services;
 
 public class TaskProgressService : ITaskProgressService
 {
-    private readonly  ConcurrentDictionary<Guid, AiTaskDto> _taskProgress;
+    private readonly ConcurrentDictionary<Guid, AiTaskDto> _taskProgress;
 
     public TaskProgressService()
     {
@@ -15,23 +15,22 @@ public class TaskProgressService : ITaskProgressService
 
     public AiTaskDto GenerateTask(Art art)
     {
+        var aiTask = new AiTaskDto()
+        {
+            Progress = 0,
+            Status = AiTaskStatus.Created,
+            WorkerId = -1,
+            TaskId = Guid.NewGuid(),
+        };
 
-            var aiTask = new AiTaskDto()
-            {
-                Progress = 0,
-                Status = AiTaskStatus.Created,
-                WorkerId = -1,
-                TaskId = Guid.NewGuid(),
-            };
-
-            if (!_taskProgress.TryAdd(aiTask.TaskId, aiTask)) return null;
-            art.TaskId = aiTask.TaskId;
-            return aiTask;
+        if (!_taskProgress.TryAdd(aiTask.TaskId, aiTask)) return null;
+        art.TaskId = aiTask.TaskId;
+        return aiTask;
     }
 
-    public void UpdateProgress(Guid taskId, AiTaskDto aiTask)
+    public void UpdateTask(AiTaskDto task)
     {
-        _taskProgress.AddOrUpdate(taskId, aiTask, (id, oldValue) => aiTask);
+        _taskProgress.AddOrUpdate(task.TaskId, task, (id, oldValue) => task);
     }
 
     public AiTaskDto GetProgress(Guid taskId)
