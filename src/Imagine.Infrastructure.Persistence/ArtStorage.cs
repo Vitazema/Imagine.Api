@@ -18,17 +18,21 @@ public class ArtStorage : IArtStorage
 
     public async Task<Art> StoreArtAsync(SdResponse response, Art art)
     {
-        var storagePath = Path.Join(_appSettings.StorageDir, art.Type.ToString(), art.User.UserName,
+        var fullPath = Path.Join(_appSettings.StorageDir, art.Type.ToString(), art.User.UserName,
             art.TaskId.ToString());
 
+        
         foreach (var image in response.ImageList)
         {
             var fileName = $"{Guid.NewGuid()}.png";
-            var filePath = Path.Combine(storagePath, fileName);
+            var filePath = Path.Combine(fullPath, fileName);
             var result = await SaveBase64ImageAsync(image, filePath);
             if (!result) throw new Exception($"Failed to save image: {filePath}");
-
-            art.Urls.Add(filePath);
+            
+            var relativeStoragePath = Path.Join(art.Type.ToString(), art.User.UserName,
+            art.TaskId.ToString(), fileName);
+            
+            art.Urls.Add(relativeStoragePath);
         }
 
         return art;

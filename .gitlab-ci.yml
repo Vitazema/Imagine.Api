@@ -20,7 +20,7 @@ workflow:
     - when: always
 
 variables:
-  OUTPUT_FOLDER: "output"
+  OUTPUT_FOLDER: "storage"
   IMAGE_NAME: "imagine-api"
   APP_VERSION: "0.1.0"
 

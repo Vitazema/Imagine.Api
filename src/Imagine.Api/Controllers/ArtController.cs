@@ -82,7 +82,7 @@ public class ArtsController : BaseApiController
         var user = await _usersRepository.GetCurrentUserAsync(User);
         if (user == null)
         {
-            return BadRequest(new ApiResponse(400, $"User {dto.User} not found"));
+            return BadRequest(new ApiResponse(400, $"Current user not found, login."));
         }
 
         var newArt = new Art()

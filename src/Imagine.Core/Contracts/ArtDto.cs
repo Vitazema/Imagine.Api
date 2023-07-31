@@ -13,7 +13,7 @@ public record ArtDto : IValidatableObject
     public List<string> Urls { get; set; }
     public DateTime CreatedAt { get; set; }
     
-    [Required] public string User { get; set; }
+    public string User { get; set; }
     [Required] public ArtType ArtType { get; set; }
     [Required] public JsonNode ArtSetting { get; set; }
 

@@ -44,8 +44,4 @@
         <ProjectReference Include="..\Imagine.Infrastructure.Persistence\Imagine.Infrastructure.Persistence.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="wwwroot" />
-    </ItemGroup>
-
 </Project>
