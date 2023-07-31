@@ -39,7 +39,6 @@ builder.Services.AddCustomAutoMapper();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
 
-
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
@@ -65,14 +64,16 @@ if (app.Environment.IsDevelopment())
 // app.UseHsts();
 // }
 
+// app.UseHttpsRedirection();
+
 // # If the app calls UseStaticFiles, place UseStaticFiles before UseRouting.
 app.UseStaticFiles();
 
 // If the app uses CORS scenarios, such as [EnableCors], place the call to UseCors before any other middleware that use CORS (for example, place UseCors before UseAuthentication, UseAuthorization, and UseEndpoints).
 app.UseCors();
 
-// Calling UseAuthentication and UseAuthorization adds the authentication and authorization middleware. These middleware are placed between UseRouting and UseEndpoints so that they can:
-//
+// Calling UseAuthentication and UseAuthorization adds the authentication and authorization
+// middleware. These middleware are placed between UseRouting and UseEndpoints so that they can:
 // See which endpoint was selected by UseRouting.
 //     Apply an authorization policy before UseEndpoints dispatches to the endpoint.
 app.UseAuthentication();
@@ -82,11 +83,8 @@ app.UseAuthorization();
 app.UseMiddleware<ExceptionMiddleware>();
 
 // Add endpoints for error handling. Redirects to errors controller.
-app.UseStatusCodePagesWithReExecute("/errors/{0}");
+// app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-app.UseStaticFiles();
-
-app.UseAuthorization();
 
 app.MapHealthChecks("/healthz", new HealthCheckOptions()
 {

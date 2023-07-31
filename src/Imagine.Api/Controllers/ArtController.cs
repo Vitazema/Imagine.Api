@@ -131,7 +131,7 @@ public class ArtsController : BaseApiController
         return Ok(updatedArt);
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:Guid}")]
     public async Task<ActionResult<ArtDto>> DeleteArt(Guid id)
     {
         var art = await _artsRepository.GetByIdAsync(id);

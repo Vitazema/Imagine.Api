@@ -16,8 +16,6 @@ public static class ApplicationServicesExtensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
-
         services.AddHttpClient();
 
         services.AddScoped<IArtStorage, ArtStorage>();
