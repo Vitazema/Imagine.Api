@@ -20,6 +20,7 @@ workflow:
     - when: always
 
 variables:
+  OUTPUT_FOLDEr: "output"
   IMAGE_NAME: "imagine-api"
   APP_VERSION: "0.1.0"
 
@@ -65,6 +66,7 @@ deploy:
     - echo "Deploying container $IMAGE_NAME:$APP_VERSION"
     - export DC_IMAGE_NAME=$IMAGE_NAME
     - export DC_IMAGE_TAG=$VERSION
+    - export DC_OUTPUT_FOLDER=$OUTPUT_FOLDER
   script:
     - docker compose down &&
       docker compose up -d

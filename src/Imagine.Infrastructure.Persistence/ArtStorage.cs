@@ -18,8 +18,8 @@ public class ArtStorage : IArtStorage
 
     public async Task<Art> StoreArtAsync(SdResponse response, Art art)
     {
-        var storagePath = Path.Join(_appSettings.ExecutionDirectory, _appSettings.StorageDir,
-            art.Type.ToString(), art.User.UserName, art.TaskId.ToString());
+        var storagePath = Path.Join(_appSettings.StorageDir, art.Type.ToString(), art.User.UserName,
+            art.TaskId.ToString());
 
         foreach (var image in response.ImageList)
         {

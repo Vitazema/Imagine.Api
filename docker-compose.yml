@@ -17,6 +17,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5000
+    volumes:
+      - ~/imagine/${DC_OUTPUT_FOLDER}:/${DC_OUTPUT_FOLDER}
     healthcheck:
       test: "curl -f localhost:5000/healthz"
       interval: 5s
