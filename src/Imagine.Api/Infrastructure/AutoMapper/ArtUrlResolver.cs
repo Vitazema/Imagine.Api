@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Imagine.Api.Errors;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
 using Microsoft.IdentityModel.Tokens;
@@ -15,9 +16,10 @@ public class ArtUrlResolver : IValueResolver<Art, ArtDto, List<string>>
         {
             if (string.IsNullOrEmpty(url)) return null;
             var environmentUrl = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(";").FirstOrDefault();
-            if (environmentUrl == null) return null;
-            var baseUri = new Uri(environmentUrl.Replace("+", "localhost"));
-            var urlPath = new Uri(baseUri, url);
+            if (environmentUrl == null) throw new Exception("Can't find application URL");
+            var urlStoragePath = environmentUrl.Replace("+", "localhost");
+            var baseUri = new Uri(urlStoragePath);
+            var urlPath = new Uri(baseUri, Path.Combine("storage", url));
             urls.Add(urlPath.AbsoluteUri);
         }
 
