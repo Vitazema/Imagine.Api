@@ -68,7 +68,7 @@ deploy:
     - export DC_IMAGE_NAME=$IMAGE_NAME
     - export DC_IMAGE_TAG=$VERSION
     - export DC_OUTPUT_FOLDER=$OUTPUT_FOLDER
-    - export DC_API_WAN_URL=API_WAN_URL
+    - export DC_API_WAN_URL=$API_WAN_URL
   script:
     - docker compose down &&
       docker compose up -d
