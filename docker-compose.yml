@@ -17,6 +17,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5000
+      - API_WAN_URL=${DC_API_WAN_URL}
     volumes:
       - ~/imagine/${DC_OUTPUT_FOLDER}:/${DC_OUTPUT_FOLDER}
     healthcheck:

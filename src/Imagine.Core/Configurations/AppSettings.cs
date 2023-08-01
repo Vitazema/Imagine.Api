@@ -14,6 +14,4 @@ public class AppSettings
     public string SeedFilesDirectory { get; set; }
     public string InMemoryDatabaseProviderName { get; set; }
     public int QueueCapacity { get; set; }
-    public string User { get; set; }
-    public string Pass { get; set; }
 }
