@@ -16,21 +16,20 @@ public class ArtStorage : IArtStorage
         _appSettings = appSettings.Value;
     }
 
-    public async Task<Art> StoreArtAsync(SdResponse response, Art art)
+    public async Task<Art> StoreArtAsync(SdQueueTaskResult taskResult, Art art)
     {
         var fullPath = Path.Join(_appSettings.StorageDir, art.Type.ToString(), art.User.UserName,
-            art.TaskId.ToString());
+            art.Id.ToString());
 
-        
-        foreach (var image in response.ImageList)
+        foreach (var imageData in taskResult.Data)
         {
             var fileName = $"{Guid.NewGuid()}.png";
             var filePath = Path.Combine(fullPath, fileName);
-            var result = await SaveBase64ImageAsync(image, filePath);
+            var result = await SaveBase64ImageAsync(imageData.Image, filePath);
             if (!result) throw new Exception($"Failed to save image: {filePath}");
             
             var relativeStoragePath = Path.Join(art.Type.ToString(), art.User.UserName,
-            art.TaskId.ToString(), fileName);
+            art.Id.ToString(), fileName);
             
             art.Urls.Add(relativeStoragePath);
         }
@@ -42,6 +41,8 @@ public class ArtStorage : IArtStorage
     {
         try
         {
+            base64Image = Regex.Replace(base64Image, "^data:image/[a-z]+;base64,", "");
+            
             var binData = Convert.FromBase64String(base64Image);
 
             var file = new FileInfo(filePath);

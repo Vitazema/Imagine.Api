@@ -8,6 +8,5 @@ public class ArtEntityTypeConfiguration : IEntityTypeConfiguration<Art>
 {
     public void Configure(EntityTypeBuilder<Art> builder)
     {
-
     }
 }

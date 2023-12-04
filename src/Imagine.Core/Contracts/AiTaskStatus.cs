@@ -2,7 +2,7 @@
 
 public enum AiTaskStatus
 {
-    Created,
+    Initialized,
     Queued,
     Running,
     Completed,

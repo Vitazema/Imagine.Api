@@ -1,39 +1,33 @@
 ﻿using System.Collections.Concurrent;
 using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
+using Imagine.Core.Interfaces;
 
 namespace Imagine.Api.Services;
 
 public class TaskProgressService : ITaskProgressService
 {
-    private readonly ConcurrentDictionary<Guid, AiTaskDto> _taskProgress;
+    private readonly ConcurrentDictionary<Guid, AiTask> _taskProgress = new();
 
-    public TaskProgressService()
+    public AiTask GenerateTask(Guid taskId)
     {
-        _taskProgress = new ConcurrentDictionary<Guid, AiTaskDto>();
-    }
-
-    public AiTaskDto GenerateTask(Art art)
-    {
-        var aiTask = new AiTaskDto()
+        var aiTask = new AiTask()
         {
+            Id = taskId,
             Progress = 0,
-            Status = AiTaskStatus.Created,
-            WorkerId = -1,
-            TaskId = Guid.NewGuid(),
+            Status = AiTaskStatus.Initialized,
         };
 
-        if (!_taskProgress.TryAdd(aiTask.TaskId, aiTask)) return null;
-        art.TaskId = aiTask.TaskId;
-        return aiTask;
+        aiTask.OnUpdated += UpdateTask;
+
+        return !_taskProgress.TryAdd(aiTask.Id, aiTask) ? null : aiTask;
     }
 
-    public void UpdateTask(AiTaskDto task)
+    public void UpdateTask(AiTask task)
     {
-        _taskProgress.AddOrUpdate(task.TaskId, task, (id, oldValue) => task);
+        _taskProgress.AddOrUpdate(task.Id, task, (id, oldValue) => task);
     }
 
-    public AiTaskDto GetProgress(Guid taskId)
+    public AiTask GetTask(Guid taskId)
     {
         return _taskProgress.TryGetValue(taskId, out var aiTask) ? aiTask : null;
     }

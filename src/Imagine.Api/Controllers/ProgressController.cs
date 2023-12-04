@@ -1,9 +1,11 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using Imagine.Api.Constants;
 using Imagine.Api.Errors;
 using Imagine.Api.Services;
 using Imagine.Core.Configurations;
 using Imagine.Core.Contracts;
+using Imagine.Core.Interfaces;
 using Imagine.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -13,46 +15,75 @@ namespace Imagine.Api.Controllers;
 public class ProgressController : BaseApiController
 {
     private readonly ITaskProgressService _taskProgressService;
-    private readonly IOptions<WorkersSettings> _workerSettings;
+    private readonly IAiService _aiService;
+    private readonly IWorkerPool _workerPool;
     private static readonly HttpClient HttpClient = new();
 
-    public ProgressController(ITaskProgressService taskProgressService, IOptions<WorkersSettings> workerSettings)
+    public ProgressController(ITaskProgressService taskProgressService,
+        IAiService aiService, IWorkerPool workerPool)
     {
         _taskProgressService = taskProgressService;
-        _workerSettings = workerSettings;
+        _aiService = aiService;
+        _workerPool = workerPool;
     }
-        
-    [HttpGet("{taskId:guid}")]
+
+    [HttpGet("{artId:guid}")]
     [Permission(ActionConstants.ReadTask)]
-    public async Task<ActionResult<AiTaskDto>> GetTaskProgress(Guid taskId)
+    public async Task<ActionResult<AiTask>> GetTaskProgress(Guid artId)
     {
-        var aiTask = _taskProgressService.GetProgress(taskId);
-        
+        var aiTask = _taskProgressService.GetTask(artId);
+
         if (aiTask == null)
         {
-            return NotFound(new ApiResponse(404, $"Task {taskId} not found"));
+            return NotFound(new ApiResponse(404, $"Task {artId} not found"));
         }
-        
-        var workerAddress = _workerSettings.Value.StableDiffusionWorkers.FirstOrDefault(x => x.Id == aiTask.WorkerId)?.Address;
-        if (workerAddress == null)
+        if (aiTask.Status == AiTaskStatus.Completed)
         {
-            return NotFound(new ApiResponse(404, $"Task {taskId} didn't registered on :{aiTask.WorkerId} worker"));
+            return Ok(aiTask);
         }
-        
-        var sdProgressRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"http://{workerAddress}/sdapi/v1/progress");
+
+        var progressRequestJson = JsonSerializer.Serialize(new
+        {
+            id_task = artId.ToString(),
+            id_live_preview = -1
+        });
+
+        var sdProgressRequestMessage =
+            new HttpRequestMessage(HttpMethod.Post,
+                $"{_workerPool.GetWorkerById(aiTask.WorkerId).Address}/internal/progress")
+            {
+                Content = new StringContent(progressRequestJson, Encoding.UTF8, "application/json")
+            };
         var response = await HttpClient.SendAsync(sdProgressRequestMessage);
-        
+
         if (!response.IsSuccessStatusCode)
         {
-            return NotFound(new ApiResponse(404, $"Task {taskId} not found in :{aiTask.WorkerId} worker"));
+            return NotFound(new ApiResponse(404, $"Task {artId} not found in :{aiTask.WorkerId} worker"));
         }
-        
-        await using var contentStream = await response.Content.ReadAsStreamAsync();
-        var sdProgressResponse = await JsonSerializer.DeserializeAsync<SdProgressResponse>(contentStream);
-        
-        aiTask.Progress = sdProgressResponse.Progress;
-        aiTask.RelativeEstimation = sdProgressResponse.EtaRelative;
+        try
+        {
+            await using var contentStream = await response.Content.ReadAsStreamAsync();
+            var sdProgressResponse = await JsonSerializer.DeserializeAsync<SdTaskProgressDto>(contentStream);
+            if (sdProgressResponse == null)
+            {
+                return NotFound(new ApiResponse(404, $"Task {artId} not found in :{aiTask.WorkerId} worker"));
+            }
 
-        return Ok(aiTask);
+            aiTask.Progress = sdProgressResponse.Progress;
+            aiTask.RelativeEstimation = sdProgressResponse.Eta;
+
+            return Ok(aiTask);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new ApiResponse(400, e.Message));
+        }
+
+    }
+
+    [HttpPost("callback")]
+    public async Task SdApiCallback([FromForm] SdQueueApiCallback callback)
+    {
+        await _aiService.StoreArtAsync(callback);
     }
 }

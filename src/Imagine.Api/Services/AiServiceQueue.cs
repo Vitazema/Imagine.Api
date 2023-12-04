@@ -22,26 +22,22 @@ public class AiServiceQueue : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            using (var scope = _services.CreateScope())
+            using var scope = _services.CreateScope();
+            try
             {
-                try
-                {
-                    var art = await _taskQueue.DequeueAsync(stoppingToken);
+                var art = await _taskQueue.DequeueAsync(stoppingToken);
 
-                    // var artStorage = scope.ServiceProvider.GetRequiredService<IArtStorage>();
-                    // var artRepository = scope.ServiceProvider.GetRequiredService<IRepository<Art>>();
-                    var aiService = scope.ServiceProvider.GetRequiredService<IAiService>();
+                var aiService = scope.ServiceProvider.GetRequiredService<IAiService>();
 
-                    await aiService.GenerateAsync(stoppingToken, art);
-                }
-                catch (OperationCanceledException)
-                {
-                    _logger.LogInformation("Background task queue is stopping.");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error occurred executing task work item.");
-                }
+                await aiService.GenerateSdIdAsync(stoppingToken, art);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogInformation("Background task queue is stopping.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred executing task work item.");
             }
         }
     }

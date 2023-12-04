@@ -84,28 +84,23 @@ public class ArtsController : BaseApiController
         {
             return BadRequest(new ApiResponse(400, $"Current user not found, login."));
         }
-
+        
         var newArt = new Art()
         {
-            Id = Guid.NewGuid(),
             User = user,
             ArtSetting = dto.ArtSetting.ToJsonString(),
             Title = dto.Title
         };
-        
-        var task = _taskProgressService.GenerateTask(newArt);
-        if (task == null) throw new Exception("Failed to generate task");
 
-        if (task.TaskId == Guid.Empty)
-        {
-            return BadRequest(new ApiResponse(500, $"Worker error: Art {dto.Id} cannot be generated"));
-        }
+        // var task = _taskProgressService.GenerateTask(newArt);
         
         // Queue a background work item
-        task.Status = AiTaskStatus.Queued;
-        _taskProgressService.UpdateTask(task);
-        await _taskQueue.EnqueueAsync(newArt);
+        // await _taskQueue.EnqueueAsync(newArt);
 
+        var task = await _aiService.GenerateSdIdAsync(new CancellationToken(false), newArt);
+        if (task == null || task.Id == Guid.Empty)
+            return BadRequest(new ApiResponse(500, $"Failed to generate a task: Art {dto.Id}"));
+        
         var artResult = await _artsRepository.AddAsync(newArt);
         var artDto = _mapper.Map<Art, ArtDto>(artResult);
 

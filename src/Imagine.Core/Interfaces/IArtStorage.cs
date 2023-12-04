@@ -5,5 +5,5 @@ namespace Imagine.Core.Interfaces;
 
 public interface IArtStorage
 {
-    Task<Art> StoreArtAsync(SdResponse response, Art art);
+    Task<Art> StoreArtAsync(SdQueueTaskResult result, Art art);
 }

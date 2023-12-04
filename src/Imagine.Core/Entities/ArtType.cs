@@ -2,8 +2,8 @@ namespace Imagine.Core.Entities;
 
 public enum ArtType
 {
-    Flowers,
     Txt2Img,
+    Flowers,
     Avatar,
     StyledVideo,
     GeneratedImage
