@@ -48,7 +48,7 @@ build_image:
     - echo "VERSION=$APP_VERSION" >> build.env
   script:
     - echo "Building and tagging docker image $IMAGE_NAME:$APP_VERSION"
-    - docker build -t $IMAGE_NAME:$APP_VERSION .
+    - docker build --pull -t $IMAGE_NAME:$APP_VERSION .
   artifacts:
     reports:
       dotenv: build.env
