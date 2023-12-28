@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install -y curl jq
     
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 COPY Imagine.sln ./
 COPY ["src/Imagine.Api/Imagine.Api.csproj", "./src/Imagine.Api/"]
