@@ -4,21 +4,24 @@ using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
 using Imagine.Core.Interfaces;
 using Imagine.Core.Specifications;
+using Microsoft.Extensions.Options;
 
 namespace Imagine.Api.Services;
 
 public class AiService : IAiService
 {
+    private readonly AppSettings _appSettings;
     private readonly IAiApiService _aiApiService;
     private readonly ITaskProgressService _taskProgressService;
     private readonly IArtStorage _artStorage;
     private readonly IRepository<Art> _artsRepository;
     private readonly IWorkerPool _workerPool;
     
-    public AiService(IAiApiService aiApiService, ITaskProgressService taskProgressService, IArtStorage artStorage,
+    public AiService(IOptions<AppSettings> appSettings, IAiApiService aiApiService, ITaskProgressService taskProgressService, IArtStorage artStorage,
         IRepository<Art> artsRepository, IWorkerPool workerPool
     )
     {
+        _appSettings = appSettings.Value;
         _aiApiService = aiApiService;
         _taskProgressService = taskProgressService;
         _artStorage = artStorage;
@@ -29,9 +32,8 @@ public class AiService : IAiService
     public async Task<AiTask> GenerateSdIdAsync(CancellationToken token, Art art)
     {
         // Inject SD queue api callback
-        art.SetArtSetting("callback_url", $"http://192.168.1.211:5000/progress/callback");
-
         art.WorkerId = await _workerPool.NextWorker();
+        art.SetArtSetting("callback_url", $"{_appSettings.HostAddress}/progress/callback");
 
         var taskId = await _aiApiService.EnqueueSdTaskAsync(art, token);
         if (taskId is null) return null;

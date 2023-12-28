@@ -4,6 +4,7 @@ namespace Imagine.Core.Configurations;
 
 public class AppSettings
 {
+    public string HostAddress { get; set; }
     /// <summary>
     /// Thread safe stored value for ExecutionDirectory
     /// </summary>

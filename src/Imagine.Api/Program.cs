@@ -2,7 +2,6 @@ using HealthChecks.UI.Client;
 using Imagine.Api.Extensions;
 using Imagine.Api.Infrastructure.AutoMapper;
 using Imagine.Api.Middleware;
-using Imagine.Api.Mvc;
 using Imagine.Core.Configurations;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
