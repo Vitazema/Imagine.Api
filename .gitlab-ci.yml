@@ -1,6 +1,6 @@
 # Official framework image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/node/tags/
-image: mcr.microsoft.com/dotnet/sdk:7.0
+image: mcr.microsoft.com/dotnet/sdk:8.0
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -48,7 +48,6 @@ build_image:
     - echo "VERSION=$APP_VERSION" >> build.env
   script:
     - echo "Building and tagging docker image $IMAGE_NAME:$APP_VERSION"
-    - docker pull
     - docker build --pull -t $IMAGE_NAME:$APP_VERSION .
   artifacts:
     reports:
