@@ -29,12 +29,9 @@ public class StableDiffusionQueueApiService : IAiApiService
 
     public async Task<string> EnqueueSdTaskAsync(Art art, CancellationToken cancellationToken)
     {
-        // todo: inject into art
-        var aiType = "txt2img";
-
         var sdRequestMessage =
             new HttpRequestMessage(HttpMethod.Post,
-                $"{_workerPool.GetWorkerById(art.WorkerId).Address}/agent-scheduler/v1/queue/{aiType}")
+                $"{_workerPool.GetWorkerById(art.WorkerId).Address}/agent-scheduler/v1/queue/{art.Type.ToString().ToLower()}")
             {
                 Content = new StringContent(art.ArtSetting, Encoding.UTF8, "application/json")
             };

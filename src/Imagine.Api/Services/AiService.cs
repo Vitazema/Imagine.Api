@@ -34,6 +34,8 @@ public class AiService : IAiService
         // Inject SD queue api callback
         art.WorkerId = await _workerPool.NextWorker();
         art.SetArtSetting("callback_url", $"{_appSettings.HostAddress}/progress/callback");
+        art.SetArtSetting("steps", "25");
+        art.SetArtSetting("negative_prompt", "ugly blurry text");
 
         var taskId = await _aiApiService.EnqueueSdTaskAsync(art, token);
         if (taskId is null) return null;
