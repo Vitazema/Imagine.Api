@@ -21,6 +21,7 @@ workflow:
 
 variables:
   OUTPUT_FOLDER: "storage"
+  PROJECT_FOLDER: "/home/zema/imagine"
   API_WAN_URL: "http://api.aiexpression.net"
   IMAGE_NAME: "imagine-api"
   APP_VERSION: "0.1.0"
@@ -68,6 +69,7 @@ deploy:
     - export DC_IMAGE_NAME=$IMAGE_NAME
     - export DC_IMAGE_TAG=$VERSION
     - export DC_OUTPUT_FOLDER=$OUTPUT_FOLDER
+    - export DC_PROJECT_FOLDER=$PROJECT_FOLDER
     - export DC_API_WAN_URL=$API_WAN_URL
   script:
     - docker compose down &&
