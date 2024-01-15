@@ -36,7 +36,7 @@ public class UsersController : BaseApiController
         var permissions = await _permissionRepository.GetPermissionsAsync(user);
         var userDto = _mapper.Map<User, UserDto>(user);
         userDto.Permission = permissions;
-        return Ok(user);
+        return Ok(userDto);
     }
 
     [Authorize]
@@ -53,7 +53,7 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<Subscription>> GetUserSubscription()
     {
         var user = await _userManager.FindUserByClaimsPrincipleWithSubscriptionAsync(User);
-        return Ok(_mapper.Map<User, SubscriptionDto>(user));
+        return Ok(user?.Subscription);
     }
     
     [Authorize]
