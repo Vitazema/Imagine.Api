@@ -1,14 +1,17 @@
 ﻿using Imagine.Core.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Core.Specifications;
 
 public class ArtSpecRequest
 {
     private const int MaxPageSize = 50;
+    [FromQuery(Name = "page")]
     public int PageIndex { get; set; } = 1;
     private int _pageSize = 10;
     private string _search;
-
+    
+    [FromQuery(Name ="limit")]
     public int PageSize
     {
         get => _pageSize;
