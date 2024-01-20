@@ -44,7 +44,7 @@ public class ArtsController : BaseApiController
         _taskQueue = taskQueue;
     }
 
-    [Authorize]
+     // [Authorize]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ArtDto>>> GetArts([FromQuery] ArtSpecRequest artRequest)
     {
@@ -63,7 +63,7 @@ public class ArtsController : BaseApiController
             totalArts, data));
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpGet("{id:Guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -77,7 +77,7 @@ public class ArtsController : BaseApiController
         return Ok(_mapper.Map<Art, ArtDto>(art));
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpPost]
     public async Task<ActionResult<ArtDto>> AddArt([FromBody] ArtDto dto)
     {
@@ -111,7 +111,7 @@ public class ArtsController : BaseApiController
         return Created($"/gallery/{artDto.Id}", artDto);
     }
     
-    [Authorize]
+    // [Authorize]
     [HttpPut]
     public async Task<ActionResult<ArtDto>> UpdateArt([FromBody] ArtDto dto)
     {
@@ -129,7 +129,7 @@ public class ArtsController : BaseApiController
         return Ok(updatedArt);
     }
     
-    [Authorize]
+    // [Authorize]
     [HttpDelete("{id:Guid}")]
     public async Task<ActionResult<ArtDto>> DeleteArt(Guid id)
     {
