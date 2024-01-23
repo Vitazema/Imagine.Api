@@ -26,13 +26,13 @@ public class UserRepository : IUserRepository
         _permissionRepository = permissionRepository;
         _tokenService = tokenService;
     }
-    
+
     public async Task<User?> GetCurrentUserAsync(ClaimsPrincipal user)
     {
         var userName = user.FindFirstValue(ClaimTypes.Name);
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
-        
-        return await _userManager.FindUserByNameWithSubscriptionAsync(userName); 
+
+        return await _userManager.FindUserByNameWithFullInfoAsync(userName);
     }
 
     public async Task<User?> GetUserAsync(string? userName)
@@ -59,7 +59,7 @@ public class UserRepository : IUserRepository
 
     public async Task<UserDto?> Login(string userName)
     {
-        var user = await _userManager.FindUserByNameWithSubscriptionAsync(userName);
+        var user = await _userManager.FindUserByNameWithFullInfoAsync(userName);
         {
             // todo: set no password here
             // var result = await _singInManager.CheckPasswordSignInAsync(user, "", false);
@@ -88,5 +88,33 @@ public class UserRepository : IUserRepository
         userDto.Permission = await _permissionRepository.GetPermissionsAsync(newUser);
         userDto.Token = _tokenService.CreateToken(newUser);
         return !result.Succeeded ? null : userDto;
+    }
+    
+    public async Task<UserSettings?> GetCurrentUserSettingsAsync(ClaimsPrincipal user)
+    {
+        var userName = user.FindFirstValue(ClaimTypes.Name);
+        if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
+        
+        var currentUser = await _userManager.FindUserByNameWithFullInfoAsync(userName);
+        return currentUser?.UserSettings;
+    }
+    
+    public async Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal, UserSettingsDto userSettings)
+    {
+        var userName = userPrincipal.FindFirstValue(ClaimTypes.Name);
+        if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
+        var user = await _userManager.FindUserByNameWithFullInfoAsync(userName);
+        if (user == null) throw new InvalidOperationException("User not found or unauthorized");
+        
+        user.UserSettings ??= new UserSettings()
+        {
+            UserId = user.Id,
+            User = user,
+        };
+        
+        user.UserSettings.SelectedAiType = userSettings.AiType;
+        var result = await _userManager.UpdateAsync(user);
+        if (result.Succeeded) return userSettings;
+        throw new InvalidOperationException("Can't save user settings for user: " + userName);
     }
 }

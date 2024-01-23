@@ -7,20 +7,24 @@ namespace Imagine.Auth.Extensions;
 
 public static class UserManagerExtensions
 {
-    public static async Task<User?> FindUserByClaimsPrincipleWithSubscriptionAsync(this UserManager<User> input, ClaimsPrincipal user)
+    public static async Task<User?> FindUserByClaimsPrincipleWithFullInfoAsync(this UserManager<User> input, ClaimsPrincipal user)
     {
         var userName = user.FindFirstValue(ClaimTypes.Name);
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
         
-        return await input.Users.Include(x => x.Subscription)
+        return await input.Users
+            .Include(x => x.Subscription)
+            .Include(x => x.UserSettings)
             .FirstOrDefaultAsync(x => x.UserName == userName);
     }
 
-    public static async Task<User?> FindUserByNameWithSubscriptionAsync(this UserManager<User> input,
+    public static async Task<User?> FindUserByNameWithFullInfoAsync(this UserManager<User> input,
         string userName)
     {
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
-        var user = await input.Users.Include(x => x.Subscription)
+        var user = await input.Users
+            .Include(x => x.Subscription)
+            .Include(x => x.UserSettings)
             .FirstOrDefaultAsync(x => x.UserName == userName);
         return user;
     }

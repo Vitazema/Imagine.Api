@@ -6,5 +6,6 @@ public class User : IdentityUser
 {
     public Role Role { get; set; }
     public Subscription Subscription { get; set; }
+    public UserSettings UserSettings { get; set; }
     public ICollection<Art> Arts { get; set; }
 }

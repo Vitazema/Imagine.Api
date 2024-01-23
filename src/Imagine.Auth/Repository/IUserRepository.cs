@@ -11,4 +11,6 @@ public interface IUserRepository
     Task<UserDto?> Login(string userName);
     Task<UserDto?> RegisterUser(string userName);
     Task<User?> GetCurrentUserAsync(ClaimsPrincipal user);
+    Task<UserSettings?> GetCurrentUserSettingsAsync(ClaimsPrincipal user);
+    Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal, UserSettingsDto userSettings);
 }

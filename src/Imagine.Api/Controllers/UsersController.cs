@@ -49,10 +49,27 @@ public class UsersController : BaseApiController
     }
 
     [Authorize]
+    [HttpGet("settings")]
+    public async Task<ActionResult<UserSettings>> GetCurrentUserSettings()
+    {
+        return await _userRepository.GetCurrentUserSettingsAsync(User);
+    }
+    
+    [Authorize]
+    [HttpPut("settings")]
+    public async Task<ActionResult<UserSettingsDto>> UpdateCurrentUserSettings(UserSettingsDto userSettings)
+    {
+        var updatedUserSettings = await _userRepository.UpdateUserSettingsAsync(User, userSettings);
+        if (updatedUserSettings != null)
+            return Ok(userSettings);
+        return BadRequest(new ApiResponse(400));
+    }
+
+    [Authorize]
     [HttpGet("subscription")]
     public async Task<ActionResult<Subscription>> GetUserSubscription()
     {
-        var user = await _userManager.FindUserByClaimsPrincipleWithSubscriptionAsync(User);
+        var user = await _userManager.FindUserByClaimsPrincipleWithFullInfoAsync(User);
         return Ok(user?.Subscription);
     }
     
@@ -60,7 +77,7 @@ public class UsersController : BaseApiController
     [HttpPut("subscription")]
     public async Task<ActionResult<SubscriptionDto>> UpdateUserSubscription(int addDays, Role role)
     {
-        var user = await _userManager.FindUserByClaimsPrincipleWithSubscriptionAsync(User);
+        var user = await _userManager.FindUserByClaimsPrincipleWithFullInfoAsync(User);
         if (user == null) return BadRequest(new ApiResponse(400));
         if (user.Subscription == null)
         {

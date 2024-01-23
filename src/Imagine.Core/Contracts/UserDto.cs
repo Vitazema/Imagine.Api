@@ -9,5 +9,6 @@ public record UserDto
     public string Token { get; set; }
     public UserPermission Permission { get; set; }
     public SubscriptionDto Subscription { get; set; }
+    public UserSettingsDto UserSettings { get; set; }
     public Role Role { get; set; }
 }

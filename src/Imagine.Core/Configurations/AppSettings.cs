@@ -14,5 +14,6 @@ public class AppSettings
     public string StorageDir { get; set; }
     public string SeedFilesDirectory { get; set; }
     public string InMemoryDatabaseProviderName { get; set; }
+    public int TempFilesExpirationInDays { get; set; }
     public int QueueCapacity { get; set; }
 }

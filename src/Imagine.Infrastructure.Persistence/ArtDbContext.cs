@@ -25,6 +25,9 @@ public class ArtDbContext : IdentityDbContext<User>
         modelBuilder.Entity<User>().HasOne(u => u.Subscription)
             .WithOne(s => s.User)
             .HasForeignKey<Subscription>(s => s.UserId);
+        modelBuilder.Entity<User>().HasOne(u => u.UserSettings)
+            .WithOne(s => s.User)
+            .HasForeignKey<UserSettings>(s => s.UserId);
         modelBuilder.ApplyConfiguration(new ArtEntityTypeConfiguration());
     }
 }

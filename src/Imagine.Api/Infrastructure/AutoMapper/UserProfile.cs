@@ -18,11 +18,21 @@ public class UserProfile : Profile
                     Role = u.Role,
                     ExpiresAt = u.Subscription.ExpiresAt,
                     UserName = u.UserName
-                }));
+                }))
+            .ForMember(u => u.UserSettings, o => o.MapFrom(x => new UserSettingsDto()
+            {
+                AiType = x.UserSettings.SelectedAiType
+            }));
 
         CreateMap<User, SubscriptionDto>()
             .ForMember(s => s.UserName, o => o.MapFrom(s => s.UserName))
             .ForMember(s => s.ExpiresAt, o => o.MapFrom(s => s.Subscription.ExpiresAt))
             .ForMember(s => s.Role, o => o.MapFrom(s => s.Role));
+
+        CreateMap<UserSettings, UserSettingsDto>()
+            .ForMember(u => u.AiType, o => o.MapFrom(u => u.SelectedAiType));
+        
+        CreateMap<UserSettingsDto, UserSettings>()
+            .ForMember(u => u.SelectedAiType, o => o.MapFrom(u => u.AiType));
     }
 }
