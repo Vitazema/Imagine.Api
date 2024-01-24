@@ -6,6 +6,7 @@ using Imagine.Core.Entities;
 using Imagine.Core.Entities.Identity;
 using Imagine.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Imagine.Auth.Repository;
 
@@ -103,18 +104,33 @@ public class UserRepository : IUserRepository
     {
         var userName = userPrincipal.FindFirstValue(ClaimTypes.Name);
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
-        var user = await _userManager.FindUserByNameWithFullInfoAsync(userName);
-        if (user == null) throw new InvalidOperationException("User not found or unauthorized");
-        
-        user.UserSettings ??= new UserSettings()
+
+        for (int retry = 0; retry < 3; retry++)
         {
-            UserId = user.Id,
-            User = user,
-        };
+            try
+            {
+                var user = await _userManager.FindUserByNameWithFullInfoAsync(userName);
+                if (user == null) throw new InvalidOperationException("User not found or unauthorized");
+                
+                user.UserSettings ??= new UserSettings()
+                {
+                    UserId = user.Id,
+                    User = user,
+                };
+                
+                user.UserSettings.SelectedAiType = userSettings.AiType;
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded) return userSettings;
+                throw new InvalidOperationException("Can't save user settings for user: " + userName);
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                if (retry == 3) throw;
+            }
+
+            await Task.Delay(300);
+        }
         
-        user.UserSettings.SelectedAiType = userSettings.AiType;
-        var result = await _userManager.UpdateAsync(user);
-        if (result.Succeeded) return userSettings;
-        throw new InvalidOperationException("Can't save user settings for user: " + userName);
+        throw new InvalidOperationException("Update settings failed after multiple attempts for user: " + userName);
     }
 }
