@@ -14,7 +14,7 @@ public class AttachmentController : BaseApiController
     }
     
     [HttpGet]
-    public async Task<ActionResult<Attachment>> GetAttachmentById(string id)
+    public async Task<ActionResult<Attachment>> GetAttachmentById([FromQuery] string id)
     {
         var attachment = await _attachmentRepository.GetAttachmentAsync(id);
         return Ok(attachment ?? new Attachment());
