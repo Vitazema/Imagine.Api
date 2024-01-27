@@ -30,9 +30,11 @@ public class UserProfile : Profile
             .ForMember(s => s.Role, o => o.MapFrom(s => s.Role));
 
         CreateMap<UserSettings, UserSettingsDto>()
-            .ForMember(u => u.AiType, o => o.MapFrom(u => u.SelectedAiType));
+            .ForMember(u => u.AiType, o => o.MapFrom(u => u.SelectedAiType))
+            .ForMember(u => u.Language, o => o.MapFrom(u => u.Language));
         
         CreateMap<UserSettingsDto, UserSettings>()
-            .ForMember(u => u.SelectedAiType, o => o.MapFrom(u => u.AiType));
+            .ForMember(u => u.SelectedAiType, o => o.MapFrom(u => u.AiType))
+            .ForMember(u => u.Language, o => o.MapFrom(u => u.Language));
     }
 }

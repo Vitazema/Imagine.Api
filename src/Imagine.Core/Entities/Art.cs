@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Imagine.Core.Entities.Identity;
 
@@ -8,8 +9,9 @@ public class Art : BaseEntity
 {
     public string Title { get; set; }
     public List<string> Urls { get; set; } = new();
-    public User User { get; set; }
+    [Required]
     public string UserId { get; set; }
+    public User User { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ArtType Type { get; set; }
     public int WorkerId { get; set; }

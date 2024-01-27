@@ -7,4 +7,5 @@ public record UserSettingsDto
 {
     [JsonPropertyName("selectedFeature")]
     public ArtType AiType { get; set; }
+    public string Language { get; set; }
 }

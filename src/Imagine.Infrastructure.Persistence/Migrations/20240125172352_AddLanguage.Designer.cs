@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,13 +13,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Imagine.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ArtDbContext))]
-    partial class ArtDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240125172352_AddLanguage")]
+    partial class AddLanguage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -45,7 +48,6 @@ namespace Imagine.Infrastructure.Persistence.Migrations
                         .HasColumnType("text[]");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("WorkerId")
@@ -312,9 +314,7 @@ namespace Imagine.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("Imagine.Core.Entities.Identity.User", "User")
                         .WithMany("Arts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
