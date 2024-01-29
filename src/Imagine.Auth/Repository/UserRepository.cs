@@ -1,11 +1,14 @@
-﻿using System.Security.Claims;
+﻿using System.Net;
+using System.Security.Claims;
 using AutoMapper;
 using Imagine.Auth.Extensions;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
 using Imagine.Core.Entities.Identity;
 using Imagine.Core.Interfaces;
+using Imagine.Core.Utilities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Imagine.Auth.Repository;
@@ -19,7 +22,8 @@ public class UserRepository : IUserRepository
     private readonly ITokenService _tokenService;
 
     public UserRepository(UserManager<User> userManager,
-        SignInManager<User> singInManager, IMapper mapper, IPermissionRepository permissionRepository, ITokenService tokenService)
+        SignInManager<User> singInManager, IMapper mapper, IPermissionRepository permissionRepository,
+        ITokenService tokenService)
     {
         _userManager = userManager;
         _singInManager = singInManager;
@@ -42,9 +46,9 @@ public class UserRepository : IUserRepository
         {
             return null;
         }
-            
+
         var user = await _userManager.FindByNameAsync(userName);
-        
+
         return user;
     }
 
@@ -54,53 +58,66 @@ public class UserRepository : IUserRepository
         {
             return null;
         }
+
         var user = await _userManager.FindByIdAsync(userId);
         return user;
     }
 
-    public async Task<UserDto?> Login(string userName)
+    public async Task<UserDto?> Login(UserCredentials userCredentials)
     {
-        var user = await _userManager.FindUserByNameWithFullInfoAsync(userName);
+        //todo: make work with email too
+        if (userCredentials.UserInput.IsValidEmailAddress())
+            return null;
+        var user = await _userManager.FindUserByNameWithFullInfoAsync(userCredentials.UserInput);
+        if (user == null) return null;
+        if (userCredentials.Password.Length > 0)
         {
-            // todo: set no password here
-            // var result = await _singInManager.CheckPasswordSignInAsync(user, "", false);
-            // if (result.Succeeded)
-            // {
-            var userDto = _mapper.Map<User, UserDto>(user);
-            userDto.Permission = await _permissionRepository.GetPermissionsAsync(user);
-            userDto.Token = _tokenService.CreateToken(user);
-
-            return userDto;
-            // };
+            var result = await _singInManager.CheckPasswordSignInAsync(user, userCredentials.Password, false);
+            if (!result.Succeeded) return null;
         }
 
-        return null;
+        var userDto = _mapper.Map<User, UserDto>(user);
+        userDto.Permission = await _permissionRepository.GetPermissionsAsync(user);
+        userDto.Token = _tokenService.CreateToken(user);
+
+        return userDto;
     }
 
-    public async Task<UserDto?> RegisterUser(string userName)
+    public async Task<UserDto?> Register(RegisterDto registerInfo)
     {
         var newUser = new User()
         {
-            UserName = userName,
+            UserName = registerInfo.UserName,
+            Email = registerInfo.Email,
             Role = Role.Free
         };
-        var result = await _userManager.CreateAsync(newUser);
-        var userDto = _mapper.Map<User, UserDto>(newUser);
-        userDto.Permission = await _permissionRepository.GetPermissionsAsync(newUser);
-        userDto.Token = _tokenService.CreateToken(newUser);
-        return !result.Succeeded ? null : userDto;
+
+        IdentityResult result;
+        
+        if (registerInfo.Password.Length > 0)
+            result = await _userManager.CreateAsync(newUser, registerInfo.Password);
+        else
+            result = await _userManager.CreateAsync(newUser);
+        
+        if (!result.Succeeded) return null;
+
+        var user = _mapper.Map<User, UserDto>(newUser);
+        user.Permission = await _permissionRepository.GetPermissionsAsync(newUser);
+        user.Token = _tokenService.CreateToken(newUser);
+        return user;
     }
-    
+
     public async Task<UserSettings?> GetCurrentUserSettingsAsync(ClaimsPrincipal user)
     {
         var userName = user.FindFirstValue(ClaimTypes.Name);
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
-        
+
         var currentUser = await _userManager.FindUserByNameWithFullInfoAsync(userName);
         return currentUser?.UserSettings;
     }
-    
-    public async Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal, UserSettingsDto userSettings)
+
+    public async Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal,
+        UserSettingsDto userSettings)
     {
         var userName = userPrincipal.FindFirstValue(ClaimTypes.Name);
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
@@ -111,13 +128,13 @@ public class UserRepository : IUserRepository
             {
                 var user = await _userManager.FindUserByNameWithFullInfoAsync(userName);
                 if (user == null) throw new InvalidOperationException("User not found or unauthorized");
-                
+
                 user.UserSettings ??= new UserSettings()
                 {
                     UserId = user.Id,
                     User = user,
                 };
-                
+
                 user.UserSettings.SelectedAiType = userSettings.AiType;
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded) return userSettings;
@@ -130,7 +147,7 @@ public class UserRepository : IUserRepository
 
             await Task.Delay(300);
         }
-        
+
         throw new InvalidOperationException("Update settings failed after multiple attempts for user: " + userName);
     }
 }

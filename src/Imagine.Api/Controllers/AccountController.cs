@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Imagine.Api.Errors;
 using Imagine.Auth.Extensions;
 using Imagine.Auth.Repository;
@@ -12,14 +13,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;
 
-public class UsersController : BaseApiController
+public class AccountController : BaseApiController
 {
     private readonly IUserRepository _userRepository;
     private readonly IPermissionRepository _permissionRepository;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
 
-    public UsersController(IUserRepository userRepository,
+    public AccountController(IUserRepository userRepository,
         IPermissionRepository permissionRepository, IMapper mapper, UserManager<User> userManager)
     {
         _userRepository = userRepository;
@@ -100,18 +101,19 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login(string userName)
+    public async Task<ActionResult<UserDto>> Login([FromBody] UserCredentials credentials)
     {
-        var user = await _userRepository.Login(userName);
+        var user = await _userRepository.Login(credentials);
+        if (user == null) return Unauthorized(new ApiResponse(401));
 
         return Ok(user);
     }
     
     // [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> Register(string userName)
+    public async Task<ActionResult<UserDto>> Register(RegisterDto registerInfo)
     {
-        var user = await _userRepository.RegisterUser(userName);
+        var user = await _userRepository.Register(registerInfo);
         if (user == null) return BadRequest(new ApiResponse(400));
 
         return Ok(user);

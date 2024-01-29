@@ -59,20 +59,18 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 app.DbInitialize();
 
-var enableDefaultBrowsing = true;
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerDocumentation();
     // app.UseDeveloperExceptionPage();
-    enableDefaultBrowsing = true;
 }
-else
-{
+// else
+// {
 // app.UseExceptionHandler("/Error");
 
 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 // app.UseHsts();
-}
+// }
 
 // app.UseHttpsRedirection();
 
@@ -89,7 +87,7 @@ app.UseFileServer(new FileServerOptions
 {
     FileProvider = new PhysicalFileProvider(storageDir),
     RequestPath = "/storage",
-    EnableDirectoryBrowsing = enableDefaultBrowsing
+    EnableDirectoryBrowsing = true
 });
 
 // If the app uses CORS scenarios, such as [EnableCors], place the call to UseCors before any other middleware that use CORS (for example, place UseCors before UseAuthentication, UseAuthorization, and UseEndpoints).

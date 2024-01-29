@@ -33,6 +33,17 @@ public static class IdentityServiceExtensions
                     ValidateAudience = false
                 };
             });
+
+        builder.Services.Configure<IdentityOptions>(o =>
+        {
+            o.Password.RequireDigit = false;
+            o.Password.RequireLowercase = false;
+            o.Password.RequireNonAlphanumeric = false;
+            o.Password.RequireUppercase = false;
+            o.Password.RequiredLength = 8;
+            o.Password.RequiredUniqueChars = 0;
+        });
+        
         return services;
     }
 }

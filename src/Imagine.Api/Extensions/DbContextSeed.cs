@@ -18,15 +18,12 @@ public static class DbContextSeed
         var usersDataFile = Path.Join(appSettings.ExecutionDirectory, appSettings.SeedFilesDirectory,
             UsersSeedDataFile);
         using var reader = new StreamReader(usersDataFile);
-        var usersJson = reader.ReadToEnd();
+        var usersJson = await reader.ReadToEndAsync();
         var users = JsonSerializer.Deserialize<List<User>>(usersJson);
 
-        foreach (var user in users)
+        foreach (var user in users.Where(user => !userManager.Users.Contains(user)))
         {
-            if (!userManager.Users.Contains(user))
-            {
-                await userManager.CreateAsync(user);
-            }
+            await userManager.CreateAsync(user);
         }
 
         return users;
@@ -61,8 +58,6 @@ public static class DbContextSeed
                 context.Set<T>().Add(entity);
             }
         }
-
-        ;
         await context.SaveChangesAsync();
     }
 }
