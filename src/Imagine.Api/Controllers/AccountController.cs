@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using Imagine.Api.Errors;
 using Imagine.Auth.Extensions;
 using Imagine.Auth.Repository;
@@ -61,16 +60,14 @@ public class AccountController : BaseApiController
     public async Task<ActionResult<UserSettingsDto>> UpdateCurrentUserSettings(UserSettingsDto userSettings)
     {
         var updatedUserSettings = await _userRepository.UpdateUserSettingsAsync(User, userSettings);
-        if (updatedUserSettings != null)
-            return Ok(userSettings);
-        return BadRequest(new ApiResponse(400));
+        return Ok(updatedUserSettings);
     }
 
     [Authorize]
     [HttpGet("subscription")]
     public async Task<ActionResult<Subscription>> GetUserSubscription()
     {
-        var user = await _userManager.FindUserByClaimsPrincipleWithFullInfoAsync(User);
+        var user = await _userManager.FindFullUserByClaimsAsync(User);
         return Ok(user?.Subscription);
     }
     
@@ -78,7 +75,7 @@ public class AccountController : BaseApiController
     [HttpPut("subscription")]
     public async Task<ActionResult<SubscriptionDto>> UpdateUserSubscription(int addDays, Role role)
     {
-        var user = await _userManager.FindUserByClaimsPrincipleWithFullInfoAsync(User);
+        var user = await _userManager.FindFullUserByClaimsAsync(User);
         if (user == null) return BadRequest(new ApiResponse(400));
         if (user.Subscription == null)
         {
@@ -109,13 +106,27 @@ public class AccountController : BaseApiController
         return Ok(user);
     }
     
-    // [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerInfo)
     {
         var user = await _userRepository.Register(registerInfo);
         if (user == null) return BadRequest(new ApiResponse(400));
 
+        return Ok(user);
+    }
+    
+    [HttpGet("emailexists")]
+    public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
+    {
+        return await _userRepository.CheckEmailExistsAsync(email);
+    }
+    
+    [Authorize]
+    [HttpPut("updateemail")]
+    public async Task<ActionResult<UserDto>> UpdateEmailAsync([FromQuery] string email)
+    {
+        var user = await _userRepository.UpdateEmailAsync(User, email);
+        
         return Ok(user);
     }
 }

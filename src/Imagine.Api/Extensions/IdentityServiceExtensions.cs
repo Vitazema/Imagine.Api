@@ -24,7 +24,7 @@ public static class IdentityServiceExtensions
             {
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    // false == anonimus validations
+                    // false == anonymous validations
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:Key"] ?? throw new InvalidOperationException())),
                     

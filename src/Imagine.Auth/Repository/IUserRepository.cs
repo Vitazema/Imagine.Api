@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Auth.Repository;
 
@@ -13,4 +14,7 @@ public interface IUserRepository
     Task<User?> GetCurrentUserAsync(ClaimsPrincipal user);
     Task<UserSettings?> GetCurrentUserSettingsAsync(ClaimsPrincipal user);
     Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal, UserSettingsDto userSettings);
+    Task<bool> CheckEmailExistsAsync(string email);
+    Task<bool> CheckUserNameExistsAsync(string userName);
+    Task<UserDto> UpdateEmailAsync(ClaimsPrincipal userPrincipal, string newEmail);
 }

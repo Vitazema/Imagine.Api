@@ -1,6 +1,8 @@
 [
   {
     "UserName": "System",
+    "Email": "vitaliy.zema@gmail.com",
+    "EmailConfirmed": true,
     "Role": "System",
     "Subscription": {
       "ExpiresAt": "2050-12-31T23:59:59.9999999Z"

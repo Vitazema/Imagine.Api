@@ -24,7 +24,7 @@ public class UserRepository : IUserRepository
     public UserRepository(UserManager<User> userManager,
         SignInManager<User> singInManager, IMapper mapper, IPermissionRepository permissionRepository,
         ITokenService tokenService)
-    {
+    { 
         _userManager = userManager;
         _singInManager = singInManager;
         _mapper = mapper;
@@ -37,7 +37,7 @@ public class UserRepository : IUserRepository
         var userName = user.FindFirstValue(ClaimTypes.Name);
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
 
-        return await _userManager.FindUserByNameWithFullInfoAsync(userName);
+        return await _userManager.FindFullUserByNameAsync(userName);
     }
 
     public async Task<User?> GetUserAsync(string? userName)
@@ -68,7 +68,7 @@ public class UserRepository : IUserRepository
         //todo: make work with email too
         if (userCredentials.UserInput.IsValidEmailAddress())
             return null;
-        var user = await _userManager.FindUserByNameWithFullInfoAsync(userCredentials.UserInput);
+        var user = await _userManager.FindFullUserByNameAsync(userCredentials.UserInput);
         if (user == null) return null;
         if (userCredentials.Password.Length > 0)
         {
@@ -112,7 +112,7 @@ public class UserRepository : IUserRepository
         var userName = user.FindFirstValue(ClaimTypes.Name);
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
 
-        var currentUser = await _userManager.FindUserByNameWithFullInfoAsync(userName);
+        var currentUser = await _userManager.FindFullUserByNameAsync(userName);
         return currentUser?.UserSettings;
     }
 
@@ -126,7 +126,7 @@ public class UserRepository : IUserRepository
         {
             try
             {
-                var user = await _userManager.FindUserByNameWithFullInfoAsync(userName);
+                var user = await _userManager.FindFullUserByNameAsync(userName);
                 if (user == null) throw new InvalidOperationException("User not found or unauthorized");
 
                 user.UserSettings ??= new UserSettings()
@@ -149,5 +149,29 @@ public class UserRepository : IUserRepository
         }
 
         throw new InvalidOperationException("Update settings failed after multiple attempts for user: " + userName);
+    }
+    
+    public async Task<UserDto> UpdateEmailAsync(ClaimsPrincipal userPrincipal, string newEmail)
+    {
+        var userName = userPrincipal.FindFirstValue(ClaimTypes.Name);
+        if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
+
+        var user = await _userManager.FindFullUserByNameAsync(userName);
+        if (user == null) throw new InvalidOperationException("User not found or unauthorized");
+
+        user.Email = newEmail;
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded) throw new InvalidOperationException("Can't save user email for user: " + userName);
+        return _mapper.Map<User, UserDto>(user);
+    }
+    
+    public async Task<bool> CheckUserNameExistsAsync(string userName)
+    {
+        return await _userManager.FindByNameAsync(userName) != null;
+    }
+
+    public async Task<bool> CheckEmailExistsAsync(string email)
+    {
+        return await _userManager.FindByEmailAsync(email) != null;
     }
 }
