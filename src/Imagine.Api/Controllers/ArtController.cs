@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
-using Imagine.Api.Errors;
 using Imagine.Api.Helpers;
 using Imagine.Api.Queue;
-using Imagine.Api.Services;
 using Imagine.Auth.Repository;
 using Imagine.Core.Contracts;
+using Imagine.Core.Contracts.Errors;
 using Imagine.Core.Entities;
 using Imagine.Core.Entities.Identity;
 using Imagine.Core.Interfaces;
 using Imagine.Core.Specifications;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

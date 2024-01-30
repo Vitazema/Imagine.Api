@@ -1,5 +1,4 @@
 ﻿using Imagine.Api.Queue;
-using Imagine.Core.Entities;
 using Imagine.Core.Interfaces;
 
 namespace Imagine.Api.Services;

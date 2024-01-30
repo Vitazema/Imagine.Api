@@ -1,8 +1,8 @@
-﻿using System.Net;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using AutoMapper;
 using Imagine.Auth.Extensions;
 using Imagine.Core.Contracts;
+using Imagine.Core.Contracts.Errors;
 using Imagine.Core.Entities;
 using Imagine.Core.Entities.Identity;
 using Imagine.Core.Interfaces;
@@ -24,7 +24,7 @@ public class UserRepository : IUserRepository
     public UserRepository(UserManager<User> userManager,
         SignInManager<User> singInManager, IMapper mapper, IPermissionRepository permissionRepository,
         ITokenService tokenService)
-    { 
+    {
         _userManager = userManager;
         _singInManager = singInManager;
         _mapper = mapper;
@@ -83,8 +83,22 @@ public class UserRepository : IUserRepository
         return userDto;
     }
 
-    public async Task<UserDto?> Register(RegisterDto registerInfo)
+    public async Task<ActionResult<UserDto?>> Register(RegisterDto registerInfo)
     {
+        if (CheckUserNameExistsAsync(registerInfo.UserName).Result)
+            return new BadRequestObjectResult(new ApiValidationErrorResponse
+            {
+                Errors = new[]
+                    { "User name already exists" }
+            });
+        
+        if (CheckEmailExistsAsync(registerInfo.Email).Result)
+            return new BadRequestObjectResult(new ApiValidationErrorResponse
+            {
+                Errors = new[]
+                    { "Email already exists" }
+            });
+
         var newUser = new User()
         {
             UserName = registerInfo.UserName,
@@ -93,12 +107,12 @@ public class UserRepository : IUserRepository
         };
 
         IdentityResult result;
-        
+
         if (registerInfo.Password.Length > 0)
             result = await _userManager.CreateAsync(newUser, registerInfo.Password);
         else
             result = await _userManager.CreateAsync(newUser);
-        
+
         if (!result.Succeeded) return null;
 
         var user = _mapper.Map<User, UserDto>(newUser);
@@ -150,7 +164,7 @@ public class UserRepository : IUserRepository
 
         throw new InvalidOperationException("Update settings failed after multiple attempts for user: " + userName);
     }
-    
+
     public async Task<UserDto> UpdateEmailAsync(ClaimsPrincipal userPrincipal, string newEmail)
     {
         var userName = userPrincipal.FindFirstValue(ClaimTypes.Name);
@@ -164,7 +178,7 @@ public class UserRepository : IUserRepository
         if (!result.Succeeded) throw new InvalidOperationException("Can't save user email for user: " + userName);
         return _mapper.Map<User, UserDto>(user);
     }
-    
+
     public async Task<bool> CheckUserNameExistsAsync(string userName)
     {
         return await _userManager.FindByNameAsync(userName) != null;

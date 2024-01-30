@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Imagine.Api.Errors;
 using Imagine.Api.Helpers;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;

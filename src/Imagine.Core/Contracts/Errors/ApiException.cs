@@ -1,4 +1,4 @@
-﻿namespace Imagine.Api.Errors;
+﻿namespace Imagine.Core.Contracts.Errors;
 
 public class ApiException : ApiResponse
 {

@@ -1,5 +1,4 @@
 using Imagine.Core.Configurations;
-using Imagine.Core.Entities;
 
 namespace Imagine.Api.Services;
 

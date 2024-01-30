@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Imagine.Core.Interfaces;
 
 namespace Imagine.Core.Contracts;
 

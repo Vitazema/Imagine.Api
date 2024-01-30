@@ -1,9 +1,8 @@
-﻿using Imagine.Api.Errors;
-using Imagine.Api.Permissions;
+﻿using Imagine.Api.Permissions;
 using Imagine.Api.Queue;
 using Imagine.Api.Services;
 using Imagine.Auth.Repository;
-using Imagine.Core.Configurations;
+using Imagine.Core.Contracts.Errors;
 using Imagine.Core.Interfaces;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;

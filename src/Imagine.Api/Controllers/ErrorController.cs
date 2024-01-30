@@ -1,4 +1,4 @@
-﻿using Imagine.Api.Errors;
+﻿using Imagine.Core.Contracts.Errors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;

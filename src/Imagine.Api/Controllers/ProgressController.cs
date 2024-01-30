@@ -1,14 +1,12 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Imagine.Api.Constants;
-using Imagine.Api.Errors;
 using Imagine.Api.Services;
-using Imagine.Core.Configurations;
 using Imagine.Core.Contracts;
+using Imagine.Core.Contracts.Errors;
 using Imagine.Core.Interfaces;
 using Imagine.Core.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace Imagine.Api.Controllers;
 

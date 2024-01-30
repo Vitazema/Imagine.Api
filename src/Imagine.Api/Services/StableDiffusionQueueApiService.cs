@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System.Text.Json;
-using Imagine.Core.Configurations;
 using Imagine.Core.Contracts;
 using Imagine.Core.Entities;
 using Imagine.Core.Interfaces;

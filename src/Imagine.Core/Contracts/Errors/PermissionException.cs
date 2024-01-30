@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Imagine.Api.Errors;
+namespace Imagine.Core.Contracts.Errors;
 
 /// <inheritdoc />
 /// <summary>Represents the permissions exception.</summary>

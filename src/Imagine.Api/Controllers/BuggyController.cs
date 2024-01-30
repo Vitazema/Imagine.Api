@@ -1,4 +1,4 @@
-﻿using Imagine.Api.Errors;
+﻿using Imagine.Core.Contracts.Errors;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

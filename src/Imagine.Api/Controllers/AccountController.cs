@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Imagine.Api.Errors;
 using Imagine.Auth.Extensions;
 using Imagine.Auth.Repository;
 using Imagine.Core.Contracts;
+using Imagine.Core.Contracts.Errors;
 using Imagine.Core.Entities;
 using Imagine.Core.Entities.Identity;
 using Imagine.Core.Interfaces;
@@ -109,10 +109,7 @@ public class AccountController : BaseApiController
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerInfo)
     {
-        var user = await _userRepository.Register(registerInfo);
-        if (user == null) return BadRequest(new ApiResponse(400));
-
-        return Ok(user);
+        return await _userRepository.Register(registerInfo);
     }
     
     [HttpGet("emailexists")]
