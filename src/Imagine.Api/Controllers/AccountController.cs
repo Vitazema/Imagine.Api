@@ -64,11 +64,11 @@ public class AccountController : BaseApiController
     }
 
     [Authorize]
-    [HttpGet("subscription")]
-    public async Task<ActionResult<Subscription>> GetUserSubscription()
+    [HttpGet("subscriptions")]
+    public async Task<ActionResult<IReadOnlyCollection<Subscription>>> GetUserSubscription()
     {
         var user = await _userManager.FindFullUserByClaimsAsync(User);
-        return Ok(user?.Subscription);
+        return Ok(user?.Subscriptions);
     }
     
     [Authorize]
@@ -77,17 +77,19 @@ public class AccountController : BaseApiController
     {
         var user = await _userManager.FindFullUserByClaimsAsync(User);
         if (user == null) return BadRequest(new ApiResponse(400));
-        if (user.Subscription == null)
+        if (user.Subscriptions.Count == 0)
         {
-            user.Subscription = new Subscription()
+            user.Subscriptions.Add(new Subscription()
             {
                 User = user,
                 ExpiresAt = DateTime.UtcNow + TimeSpan.FromDays(addDays),
-            };
+            });
         }
         else
         {
-            user.Subscription.ExpiresAt += TimeSpan.FromDays(addDays);
+            var randomSubscription = user.Subscriptions.FirstOrDefault();
+            if (randomSubscription == null) return BadRequest(new ApiResponse(400));
+            randomSubscription.ExpiresAt += TimeSpan.FromDays(addDays);
         }
         
         user.Role = user.Role == Role.System ? user.Role : role;

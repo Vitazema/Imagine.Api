@@ -145,7 +145,6 @@ public class UserRepository : IUserRepository
 
                 user.UserSettings ??= new UserSettings()
                 {
-                    UserId = user.Id,
                     User = user,
                 };
 

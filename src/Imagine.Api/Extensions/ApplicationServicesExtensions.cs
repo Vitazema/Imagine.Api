@@ -20,6 +20,7 @@ public static class ApplicationServicesExtensions
         services.AddScoped<IArtStorage, ArtStorage>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPermissionRepository, PermissionRepository>();
+        services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

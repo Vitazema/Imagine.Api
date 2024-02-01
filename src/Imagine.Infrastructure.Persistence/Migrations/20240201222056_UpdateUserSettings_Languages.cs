@@ -5,24 +5,32 @@
 namespace Imagine.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddLanguage : Migration
+    public partial class UpdateUserSettings_Languages : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AlterColumn<string>(
                 name: "Language",
                 table: "UserSettings",
                 type: "text",
-                nullable: true);
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "text",
+                oldNullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            migrationBuilder.AlterColumn<string>(
                 name: "Language",
-                table: "UserSettings");
+                table: "UserSettings",
+                type: "text",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text");
         }
     }
 }

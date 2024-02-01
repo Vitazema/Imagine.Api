@@ -8,7 +8,7 @@ public class ArtWithFiltersForCountSpecification : BaseSpecification<Art>
         : base(x =>
             (string.IsNullOrEmpty(artRequest.Search) || x.ArtSetting.ToLower()
                 .Contains(artRequest.Search)) &&
-            (!artRequest.UserId.HasValue || x.User.Id == artRequest.UserId.ToString()) &&
+            (!artRequest.UserId.HasValue || x.User.Id.ToString() == artRequest.UserId.ToString()) &&
             (!artRequest.ArtType.HasValue || x.Type == artRequest.ArtType)
         )
     {

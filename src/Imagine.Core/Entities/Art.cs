@@ -9,8 +9,7 @@ public class Art : BaseEntity
 {
     public string Title { get; set; }
     public List<string> Urls { get; set; } = new();
-    [Required]
-    public string UserId { get; set; }
+    public Guid UserId { get; set; }
     public User User { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ArtType Type { get; set; }

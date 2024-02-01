@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Imagine.Core.Entities;
 
@@ -10,4 +11,8 @@ public enum Role
     Free,
     Trial,
     Paid
+}
+
+public class ApplicationRole : IdentityRole<Guid>
+{
 }

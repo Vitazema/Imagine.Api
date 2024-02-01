@@ -5,10 +5,8 @@ namespace Imagine.Core.Entities.Identity;
 
 public class UserSettings : BaseEntity
 {
-    [Required]
-    public string UserId { get; set; } 
-    [ForeignKey("UserId")]
+    public Guid UserId { get; set; }
     public User User { get; set; }
     public ArtType SelectedAiType { get; set; }
-    public string Language { get; set; }
+    public Languages Language { get; set; }
 }

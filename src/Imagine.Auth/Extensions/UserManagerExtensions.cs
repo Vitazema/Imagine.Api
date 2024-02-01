@@ -14,7 +14,7 @@ public static class UserManagerExtensions
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
 
         return await input.Users
-            .Include(x => x.Subscription)
+            .Include(x => x.Subscriptions)
             .Include(x => x.UserSettings)
             .FirstOrDefaultAsync(x => x.UserName == userName);
     }
@@ -24,7 +24,7 @@ public static class UserManagerExtensions
     {
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
         var user = await input.Users
-            .Include(x => x.Subscription)
+            .Include(x => x.Subscriptions)
             .Include(x => x.UserSettings)
             .FirstOrDefaultAsync(x => x.UserName == userName);
         return user;
