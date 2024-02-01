@@ -18,7 +18,6 @@ static class DbInitializerExtensions
 
         var userManager = services.GetRequiredService<UserManager<User>>();
 
-
         if (app.Environment.IsDevelopment())
         {
             await artContext.Database.MigrateAsync();
