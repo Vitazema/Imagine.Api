@@ -15,6 +15,7 @@ namespace Imagine.Api.Controllers;
 
 public class ArtsController : BaseApiController
 {
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<Art> _artsRepository;
     private readonly IUserRepository _usersRepository;
     private readonly IPermissionRepository _permissionRepository;
@@ -25,12 +26,15 @@ public class ArtsController : BaseApiController
     private readonly ITaskProgressService _taskProgressService;
     private readonly IBackgroundTaskQueue _taskQueue;
 
-    public ArtsController(IRepository<Art> artsRepository, IUserRepository usersRepository,
+    public ArtsController(IUnitOfWork unitOfWork,
+        IRepository<Art> artsRepository, IUserRepository usersRepository,
         IPermissionRepository permissionRepository,
         IAiService aiService,
         IMapper mapper, UserManager<User> userManager,
-        IServiceScopeFactory serviceScopeFactory, ITaskProgressService taskProgressService, IBackgroundTaskQueue taskQueue)
+        IServiceScopeFactory serviceScopeFactory, ITaskProgressService taskProgressService,
+        IBackgroundTaskQueue taskQueue)
     {
+        _unitOfWork = unitOfWork;
         _artsRepository = artsRepository;
         _usersRepository = usersRepository;
         _permissionRepository = permissionRepository;
@@ -42,7 +46,7 @@ public class ArtsController : BaseApiController
         _taskQueue = taskQueue;
     }
 
-     // [Authorize]
+    // [Authorize]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ArtDto>>> GetArts([FromQuery] ArtSpecRequest artRequest)
     {
@@ -54,8 +58,6 @@ public class ArtsController : BaseApiController
         var arts = await _artsRepository.ListAsync(specification);
 
         var data = _mapper.Map<IReadOnlyList<ArtDto>>(arts);
-
-        Thread.Sleep(1000);
 
         return Ok(new Pagination<ArtDto>(artRequest.PageIndex, artRequest.PageSize,
             totalArts, data));
@@ -82,33 +84,20 @@ public class ArtsController : BaseApiController
         var user = await _usersRepository.GetCurrentUserAsync(User);
         if (user == null)
         {
-            return BadRequest(new ApiResponse(400, $"Current user not found, login."));
+            return BadRequest(new ApiResponse(400, $"Current user not found, please login."));
+        }
+
+        var art = await _aiService.CreateArtAsync(user, dto);
+        if (art == null)
+        {
+            return BadRequest(new ApiResponse(400, $"Failed to create art: {dto.Id}"));
         }
         
-        var newArt = new Art()
-        {
-            User = user,
-            ArtSetting = dto.ArtSetting.ToJsonString(),
-            Title = dto.Title
-        };
-
-        // var task = _taskProgressService.GenerateTask(newArt);
-        
-        // Queue a background work item
-        // await _taskQueue.EnqueueAsync(newArt);
-
-        var task = await _aiService.GenerateSdIdAsync(new CancellationToken(false), newArt);
-        if (task == null || task.Id == Guid.Empty)
-            return BadRequest(new ApiResponse(500, $"Failed to generate a task: Art {dto.Id}"));
-        
-        var artResult = await _artsRepository.AddAsync(newArt);
-        var artDto = _mapper.Map<Art, ArtDto>(artResult);
-
-        await _permissionRepository.EditCredentialsAsync(user.UserName, -10);
+        var artDto = _mapper.Map<Art, ArtDto>(art);
 
         return Created($"/gallery/{artDto.Id}", artDto);
     }
-    
+
     // [Authorize]
     [HttpPut]
     public async Task<ActionResult<ArtDto>> UpdateArt([FromBody] ArtDto dto)
@@ -126,7 +115,7 @@ public class ArtsController : BaseApiController
 
         return Ok(updatedArt);
     }
-    
+
     // [Authorize]
     [HttpDelete("{id:Guid}")]
     public async Task<ActionResult<ArtDto>> DeleteArt(Guid id)

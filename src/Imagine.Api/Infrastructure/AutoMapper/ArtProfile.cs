@@ -14,13 +14,6 @@ public sealed class ArtProfile : Profile
             .ForMember(a => a.User, o => o.MapFrom(u => u.User.UserName))
             .ForMember(a => a.Urls, o => o.MapFrom<ArtUrlResolver>())
             .ForMember(a => a.ArtSetting, o => o.MapFrom(a => StringToJson.SerializeArtSetting(a.ArtSetting)));
-
-        // CreateMap<ArtDto, Art>()
-        //     .ForMember(a => a.Id, o => o.MapFrom(u => u.Id))
-        //     .ForMember(
-        //         a => a.User,
-        //         o => o.MapFrom<UserResolver>())
-        //     .ForMember(a => a.Prompt, o => o.MapFrom(u => u.ArtSetting));
     }
 }
 

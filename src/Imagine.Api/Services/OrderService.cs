@@ -4,7 +4,7 @@ using Imagine.Core.Interfaces;
 
 namespace Imagine.Api.Services;
 
-public class OrderService(IUnitOfWork unitOfWork, IRepository<Order> orderRepository) : IOrderService
+public class OrderService(IUnitOfWork unitOfWork) : IOrderService
 {
     public async Task<Order> CreateOrderAsync(User user, int? credentials, int? subscriptionMonths)
     {

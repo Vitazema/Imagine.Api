@@ -12,18 +12,15 @@ public class StableDiffusionQueueApiService : IAiApiService
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IWorkerPool _workerPool;
     private readonly ITaskProgressService _taskProgressService;
-    private readonly IRepository<Art> _artsRepository;
 
     public StableDiffusionQueueApiService(ILogger<StableDiffusionQueueApiService> logger,
         IHttpClientFactory httpClientFactory,
-        IWorkerPool workerPool, ITaskProgressService taskProgressService,
-        IRepository<Art> artsRepository)
+        IWorkerPool workerPool, ITaskProgressService taskProgressService)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _workerPool = workerPool;
         _taskProgressService = taskProgressService;
-        _artsRepository = artsRepository;
     }
 
     public async Task<string> EnqueueSdTaskAsync(Art art, CancellationToken cancellationToken)
