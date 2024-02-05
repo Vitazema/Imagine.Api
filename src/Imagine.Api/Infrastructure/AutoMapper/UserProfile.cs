@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Imagine.Core.Contracts;
+using Imagine.Core.Entities;
 using Imagine.Core.Entities.Identity;
 
 namespace Imagine.Api.Infrastructure.AutoMapper;
@@ -28,5 +29,10 @@ public class UserProfile : Profile
         CreateMap<UserSettingsDto, UserSettings>()
             .ForMember(u => u.SelectedAiType, o => o.MapFrom(u => u.AiType))
             .ForMember(u => u.Language, o => o.MapFrom(u => u.Language));
+
+        CreateMap<Order, OrderDto>();
+        CreateMap<Subscription, SubscriptionDto>()
+            .ForMember(s => s.UserName, s => s.MapFrom(x => x.User.UserName))
+            .ForMember(s => s.Role, s => s.MapFrom(x => x.User.Role));
     }
 }

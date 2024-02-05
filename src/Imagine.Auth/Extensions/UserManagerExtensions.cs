@@ -18,6 +18,17 @@ public static class UserManagerExtensions
             .Include(x => x.UserSettings)
             .FirstOrDefaultAsync(x => x.UserName == userName);
     }
+    
+    public static async Task<User?> FindUserByClaimsAsync(this UserManager<User> input,
+        ClaimsPrincipal user)
+    {
+        var userName = user.FindFirstValue(ClaimTypes.Name);
+        if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
+
+        return await input.Users
+            .Include(x => x.UserSettings)
+            .FirstOrDefaultAsync(x => x.UserName == userName);
+    }
 
     public static async Task<User?> FindFullUserByNameAsync(this UserManager<User> input,
         string userName)

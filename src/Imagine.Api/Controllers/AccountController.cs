@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
+using Imagine.Api.Helpers;
 using Imagine.Auth.Extensions;
 using Imagine.Auth.Repository;
 using Imagine.Core.Contracts;
@@ -18,6 +19,8 @@ public class AccountController : BaseApiController
     private readonly IPermissionRepository _permissionRepository;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
+    
+    private const int CacheTtl = 600;
 
     public AccountController(IUserRepository userRepository,
         IPermissionRepository permissionRepository, IMapper mapper, UserManager<User> userManager)
@@ -27,7 +30,8 @@ public class AccountController : BaseApiController
         _mapper = mapper;
         _userManager = userManager;
     }
-
+    
+    [Cached(CacheTtl)]
     [Authorize]
     [HttpGet("current")]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
@@ -47,7 +51,8 @@ public class AccountController : BaseApiController
         var permissions = await _permissionRepository.GetPermissionsAsync(user);
         return Ok(permissions);
     }
-
+    
+    [Cached(CacheTtl)]
     [Authorize]
     [HttpGet("settings")]
     public async Task<ActionResult<UserSettings>> GetCurrentUserSettings()

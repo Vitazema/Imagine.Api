@@ -17,9 +17,11 @@ public static class ApplicationServicesExtensions
     {
         services.AddHttpClient();
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+        
         services.AddScoped<IArtStorage, ArtStorage>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPermissionRepository, PermissionRepository>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();

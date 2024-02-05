@@ -34,7 +34,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetCurrentUserAsync(ClaimsPrincipal user)
     {
-        var userName = user.FindFirstValue(ClaimTypes.Name);
+        var userName = user.GetUserNameFromPrincipal();
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
 
         return await _userManager.FindFullUserByNameAsync(userName);

@@ -25,6 +25,8 @@ public class ArtsController : BaseApiController
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ITaskProgressService _taskProgressService;
     private readonly IBackgroundTaskQueue _taskQueue;
+    
+    private const int CacheTtl = 600;
 
     public ArtsController(IUnitOfWork unitOfWork,
         IRepository<Art> artsRepository, IUserRepository usersRepository,
@@ -47,6 +49,7 @@ public class ArtsController : BaseApiController
     }
 
     // [Authorize]
+    [Cached(CacheTtl)]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ArtDto>>> GetArts([FromQuery] ArtSpecRequest artRequest)
     {
@@ -64,6 +67,7 @@ public class ArtsController : BaseApiController
     }
 
     // [Authorize]
+    [Cached(CacheTtl)]
     [HttpGet("{id:Guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
