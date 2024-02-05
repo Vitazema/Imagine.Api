@@ -49,7 +49,7 @@ public class ArtsController : BaseApiController
     }
 
     // [Authorize]
-    [Cached(CacheTtl)]
+    // [Cached(CacheTtl)]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ArtDto>>> GetArts([FromQuery] ArtSpecRequest artRequest)
     {
