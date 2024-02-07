@@ -21,8 +21,10 @@ builder.Services.AddControllers(
     // c => c.Filters.Add<PermissionsCheckServiceFilter>()
 );
 builder.Services.AddDbContext<ArtDbContext>(x => x
-    .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-    .EnableSensitiveDataLogging());
+        .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .EnableSensitiveDataLogging()
+    // todo: cause AspNetUser unique constrains issue // .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+);
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
     var configuration = ConfigurationOptions.Parse(
@@ -70,12 +72,11 @@ if (app.Environment.IsDevelopment())
 // app.UseHsts();
 // }
 
-// app.UseHttpsRedirection();
 
 // # If the app calls UseStaticFiles, place UseStaticFiles before UseRouting.
 var storageDir = app.Configuration.GetSection(nameof(AppSettings)).Get<AppSettings>().StorageDir;
 
-if (storageDir == null) throw new Exception("Cannot get storage directory"); 
+if (storageDir == null) throw new Exception("Cannot get storage directory");
 if (!Path.Exists(storageDir))
 {
     Directory.CreateDirectory(storageDir);
