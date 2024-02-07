@@ -1,10 +1,4 @@
-﻿using System.Text;
-using System.Text.Json;
-using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
-using Imagine.Core.Interfaces;
-
-namespace Imagine.Api.Services;
+﻿namespace Imagine.Api.Services;
 
 public class StableDiffusionQueueApiService : IAiApiService
 {

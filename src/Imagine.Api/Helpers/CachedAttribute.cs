@@ -1,6 +1,4 @@
-﻿using System.Text;
-using Imagine.Api.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Imagine.Api.Services;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Imagine.Api.Helpers;

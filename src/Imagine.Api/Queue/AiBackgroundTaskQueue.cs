@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Channels;
-using Imagine.Core.Entities;
 
 namespace Imagine.Api.Queue;
 

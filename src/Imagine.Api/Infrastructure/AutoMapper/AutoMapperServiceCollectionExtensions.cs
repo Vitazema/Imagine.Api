@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-
-namespace Imagine.Api.Infrastructure.AutoMapper;
+﻿namespace Imagine.Api.Infrastructure.AutoMapper;
 
 public static class AutoMapperServiceCollectionExtensions
 {

@@ -1,5 +1,4 @@
 ﻿using Imagine.Api.Permissions;
-using Imagine.Core.Contracts.Errors;
 using Imagine.Core.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
 

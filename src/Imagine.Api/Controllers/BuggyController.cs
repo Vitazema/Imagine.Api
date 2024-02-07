@@ -1,7 +1,5 @@
-﻿using Imagine.Core.Contracts.Errors;
-using Imagine.Infrastructure.Persistence;
+﻿using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;
 

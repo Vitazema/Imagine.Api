@@ -1,6 +1,4 @@
 ﻿using System.Net;
-using System.Text.Json;
-using Imagine.Core.Contracts.Errors;
 
 namespace Imagine.Api.Middleware;
 

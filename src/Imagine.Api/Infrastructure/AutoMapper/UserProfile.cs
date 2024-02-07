@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
-
-namespace Imagine.Api.Infrastructure.AutoMapper;
+﻿namespace Imagine.Api.Infrastructure.AutoMapper;
 
 public class UserProfile : Profile
 {

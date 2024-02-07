@@ -1,12 +1,8 @@
 using System.Security.Claims;
 using Imagine.Api.Services;
 using Imagine.Auth.Repository;
-using Imagine.Core.Contracts;
-using Imagine.Core.Contracts.Errors;
-using Imagine.Core.Entities;
 using Imagine.Core.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;
 

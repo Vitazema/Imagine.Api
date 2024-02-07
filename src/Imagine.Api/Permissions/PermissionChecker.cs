@@ -1,5 +1,4 @@
 ﻿using Imagine.Auth.Repository;
-using Imagine.Core.Interfaces;
 
 namespace Imagine.Api.Permissions;
 

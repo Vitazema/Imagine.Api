@@ -1,8 +1,4 @@
-﻿using Imagine.Core.Entities;
-using Imagine.Core.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Imagine.Api.Controllers;
+﻿namespace Imagine.Api.Controllers;
 
 public class AttachmentController : BaseApiController
 {

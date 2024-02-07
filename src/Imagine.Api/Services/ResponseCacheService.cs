@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 
 namespace Imagine.Api.Services;
 

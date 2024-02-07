@@ -1,7 +1,3 @@
-using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
-
 namespace Imagine.Api.Services;
 
 public interface IOrderService

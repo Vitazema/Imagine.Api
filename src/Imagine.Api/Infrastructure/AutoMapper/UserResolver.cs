@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
-using Imagine.Infrastructure.Persistence;
+﻿using Imagine.Infrastructure.Persistence;
 
 namespace Imagine.Api.Infrastructure.AutoMapper;
 

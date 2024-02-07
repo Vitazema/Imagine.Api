@@ -1,15 +1,8 @@
-﻿ using AutoMapper;
-using Imagine.Api.Helpers;
+﻿using Imagine.Api.Helpers;
 using Imagine.Auth.Extensions;
 using Imagine.Auth.Repository;
-using Imagine.Core.Contracts;
-using Imagine.Core.Contracts.Errors;
-using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
-using Imagine.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Api.Controllers;
 

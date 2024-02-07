@@ -1,6 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using Imagine.Core.Contracts;
-using Imagine.Core.Interfaces;
 
 namespace Imagine.Api.Services;
 

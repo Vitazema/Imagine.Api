@@ -1,7 +1,4 @@
-﻿using System.Text.Json;
-using Imagine.Core.Configurations;
-using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
+﻿using Imagine.Core.Configurations;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 

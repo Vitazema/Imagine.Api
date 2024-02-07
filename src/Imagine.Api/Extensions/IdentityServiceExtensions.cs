@@ -1,7 +1,4 @@
-﻿using System.Text;
-using Imagine.Auth.Services;
-using Imagine.Core.Entities.Identity;
-using Imagine.Core.Interfaces;
+﻿using Imagine.Auth.Services;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

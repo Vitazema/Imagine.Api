@@ -1,7 +1,4 @@
-﻿using Imagine.Core.Contracts.Errors;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Imagine.Api.Controllers;
+﻿namespace Imagine.Api.Controllers;
 
 [Route("errors/{code}")]
 [ApiExplorerSettings(IgnoreApi = true)]

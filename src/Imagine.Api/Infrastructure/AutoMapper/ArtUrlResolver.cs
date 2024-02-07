@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Imagine.Api.Helpers;
-using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
+﻿using Imagine.Api.Helpers;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Imagine.Api.Infrastructure.AutoMapper;

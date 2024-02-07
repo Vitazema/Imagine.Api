@@ -1,8 +1,6 @@
 ﻿using Imagine.Core.Configurations;
-using Imagine.Core.Entities.Identity;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Imagine.Api.Extensions;

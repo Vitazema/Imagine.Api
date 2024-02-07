@@ -1,6 +1,4 @@
-﻿using Imagine.Core.Entities;
-
-namespace Imagine.Api.Queue;
+﻿namespace Imagine.Api.Queue;
 
 public interface IBackgroundTaskQueue
 {

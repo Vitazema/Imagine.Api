@@ -1,8 +1,4 @@
-﻿using System.Text.Json;
-using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
-using Imagine.Core.Interfaces;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 using Role = Imagine.Core.Entities.Role;
 
 namespace Imagine.Api.Permissions;

@@ -1,8 +1,3 @@
-using AutoMapper;
-using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
-using Imagine.Core.Interfaces;
 using Imagine.Core.Specifications;
 
 namespace Imagine.Api.Services;

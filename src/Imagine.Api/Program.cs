@@ -5,7 +5,6 @@ using Imagine.Api.Middleware;
 using Imagine.Core.Configurations;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
 
@@ -45,8 +44,7 @@ builder.Services.AddHealthChecks()
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
-    .SetIsOriginAllowed(_ => true) // allow any origin
-    .AllowCredentials()
+    .AllowAnyOrigin()
 ));
 
 // if (builder.Environment.IsDevelopment())

@@ -1,0 +1,10 @@
+﻿global using System.Text;
+global using System.Text.Json;
+global using AutoMapper;
+global using Imagine.Core.Contracts;
+global using Imagine.Core.Contracts.Errors;
+global using Imagine.Core.Entities;
+global using Imagine.Core.Entities.Identity;
+global using Imagine.Core.Interfaces;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;

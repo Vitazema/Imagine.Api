@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Imagine.Api.Controllers;
+﻿namespace Imagine.Api.Controllers;
 
 [ApiController]
 [Route("/[controller]")]

@@ -1,7 +1,4 @@
 using System.Text.Json.Nodes;
-using AutoMapper;
-using Imagine.Core.Contracts;
-using Imagine.Core.Entities;
 
 namespace Imagine.Api.Infrastructure.AutoMapper;
 
