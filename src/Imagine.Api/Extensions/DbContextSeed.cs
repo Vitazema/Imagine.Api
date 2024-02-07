@@ -18,7 +18,7 @@ public static class DbContextSeed
         var usersJson = await reader.ReadToEndAsync();
         var users = JsonSerializer.Deserialize<List<User>>(usersJson);
 
-        foreach (var user in users.Where(user => !userManager.Users.Contains(user)))
+        foreach (var user in users.Where(user => userManager.FindByNameAsync(user.UserName) == null))
         {
             await userManager.CreateAsync(user);
         }
@@ -26,14 +26,14 @@ public static class DbContextSeed
         return users;
     }
     
-    public static async Task SeedDbAsync(ArtDbContext context, AppSettings appSettings, ILogger logger,
-        User systemUser)
+    public static async Task SeedDbAsync(ArtDbContext context, AppSettings appSettings, ILogger logger, UserManager<User> userManager)
     {
         try
         {
             var artsJson = await File.ReadAllTextAsync(Path.Join(appSettings.ExecutionDirectory,
                 appSettings.SeedFilesDirectory, ArtsSeedDataFile));
             var arts = JsonSerializer.Deserialize<List<Art>>(artsJson);
+            var systemUser = await userManager.FindByNameAsync("System"); 
             foreach (var art in arts)
             {
                 art.User = systemUser;

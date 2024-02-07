@@ -81,7 +81,7 @@ namespace Imagine.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Arts");
+                    b.ToTable("Arts", (string)null);
                 });
 
             modelBuilder.Entity("Imagine.Core.Entities.Identity.Subscription", b =>
@@ -103,7 +103,7 @@ namespace Imagine.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Subscription");
+                    b.ToTable("Subscription", (string)null);
                 });
 
             modelBuilder.Entity("Imagine.Core.Entities.Identity.User", b =>
@@ -198,7 +198,7 @@ namespace Imagine.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserSettings");
+                    b.ToTable("UserSettings", (string)null);
                 });
 
             modelBuilder.Entity("Imagine.Core.Entities.Order", b =>
@@ -236,7 +236,7 @@ namespace Imagine.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

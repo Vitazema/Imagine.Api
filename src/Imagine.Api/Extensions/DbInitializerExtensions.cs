@@ -19,8 +19,8 @@ static class DbInitializerExtensions
         if (app.Environment.IsDevelopment())
         {
             await artContext.Database.MigrateAsync();
-            var users = await DbContextSeed.SeedUsersAsync(userManager, appSettings);
-            await DbContextSeed.SeedDbAsync(artContext, appSettings, app.Logger, users.FirstOrDefault());
+            await DbContextSeed.SeedUsersAsync(userManager, appSettings);
+            await DbContextSeed.SeedDbAsync(artContext, appSettings, app.Logger, userManager);
         }
         else
         {

@@ -6,7 +6,7 @@ using Imagine.Infrastructure.Persistence;
 
 namespace Imagine.Api.Extensions;
 
-public static class ApplicationServicesExtensions
+public static class AppServicesExtensions
 {
     // Add services to the container.
     public static IServiceCollection AddApplicationServices(this IServiceCollection services,

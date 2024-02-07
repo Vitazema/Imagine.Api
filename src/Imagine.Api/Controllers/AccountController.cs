@@ -13,7 +13,7 @@ public class AccountController : BaseApiController
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
     
-    private const int CacheTtl = 600;
+    private const int CacheTtlSeconds = 600;
 
     public AccountController(IUserRepository userRepository,
         IPermissionRepository permissionRepository, IMapper mapper, UserManager<User> userManager)
@@ -24,7 +24,7 @@ public class AccountController : BaseApiController
         _userManager = userManager;
     }
     
-    [Cached(CacheTtl)]
+    [Cached(CacheTtlSeconds)]
     [Authorize]
     [HttpGet("current")]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
@@ -45,7 +45,7 @@ public class AccountController : BaseApiController
         return Ok(permissions);
     }
     
-    [Cached(CacheTtl)]
+    [Cached(CacheTtlSeconds)]
     [Authorize]
     [HttpGet("settings")]
     public async Task<ActionResult<UserSettings>> GetCurrentUserSettings()
