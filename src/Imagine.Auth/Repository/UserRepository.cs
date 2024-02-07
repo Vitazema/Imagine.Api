@@ -17,16 +17,19 @@ public class UserRepository : IUserRepository
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _singInManager;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IPermissionRepository _permissionRepository;
     private readonly ITokenService _tokenService;
 
     public UserRepository(UserManager<User> userManager,
-        SignInManager<User> singInManager, IMapper mapper, IPermissionRepository permissionRepository,
+        SignInManager<User> singInManager, IUnitOfWork unitOfWork, IMapper mapper,
+        IPermissionRepository permissionRepository,
         ITokenService tokenService)
     {
         _userManager = userManager;
         _singInManager = singInManager;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
         _permissionRepository = permissionRepository;
         _tokenService = tokenService;
@@ -91,7 +94,7 @@ public class UserRepository : IUserRepository
                 Errors = new[]
                     { "User name already exists" }
             });
-        
+
         if (CheckEmailExistsAsync(registerInfo.Email).Result)
             return new BadRequestObjectResult(new ApiValidationErrorResponse
             {
@@ -131,37 +134,28 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal,
-        UserSettingsDto userSettings)
+        UserSettingsDto newUserSettings)
     {
         var userName = userPrincipal.FindFirstValue(ClaimTypes.Name);
         if (userName == null) throw new InvalidOperationException("User not found or unauthorized");
 
-        for (int retry = 0; retry < 3; retry++)
-        {
-            try
+        var user = await _userManager.FindFullUserByNameAsync(userName);
+        if (user == null) throw new InvalidOperationException("User not found or unauthorized");
+
+        var userSettings = user.UserSettings == null
+            ? new UserSettings()
             {
-                var user = await _userManager.FindFullUserByNameAsync(userName);
-                if (user == null) throw new InvalidOperationException("User not found or unauthorized");
-
-                user.UserSettings ??= new UserSettings()
-                {
-                    User = user,
-                };
-
-                user.UserSettings.SelectedAiType = userSettings.AiType;
-                var result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded) return userSettings;
-                throw new InvalidOperationException("Can't save user settings for user: " + userName);
+                UserId = user.Id
             }
-            catch (DbUpdateConcurrencyException e)
-            {
-                if (retry == 3) throw;
-            }
+            : await _unitOfWork.Repository<UserSettings>().GetByIdAsync(user.UserSettings.Id);
 
-            await Task.Delay(300);
-        }
+        userSettings.SelectedAiType = newUserSettings.AiType;
 
-        throw new InvalidOperationException("Update settings failed after multiple attempts for user: " + userName);
+        _unitOfWork.Repository<UserSettings>().Update(userSettings);
+
+        var result = await _unitOfWork.Complete();
+        if (result >= 0) return newUserSettings;
+        throw new InvalidOperationException("Can't save user settings for user: " + userName);
     }
 
     public async Task<UserDto> UpdateEmailAsync(ClaimsPrincipal userPrincipal, string newEmail)

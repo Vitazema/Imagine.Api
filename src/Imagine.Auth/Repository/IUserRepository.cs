@@ -13,7 +13,7 @@ public interface IUserRepository
     Task<ActionResult<UserDto?>> Register(RegisterDto registerInfo);
     Task<User?> GetCurrentUserAsync(ClaimsPrincipal user);
     Task<UserSettings?> GetCurrentUserSettingsAsync(ClaimsPrincipal user);
-    Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal, UserSettingsDto userSettings);
+    Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal, UserSettingsDto newUserSettings);
     Task<bool> CheckEmailExistsAsync(string email);
     Task<bool> CheckUserNameExistsAsync(string userName);
     Task<UserDto> UpdateEmailAsync(ClaimsPrincipal userPrincipal, string newEmail);
