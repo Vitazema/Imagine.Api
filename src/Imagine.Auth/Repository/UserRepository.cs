@@ -142,16 +142,21 @@ public class UserRepository : IUserRepository
         var user = await _userManager.FindFullUserByNameAsync(userName);
         if (user == null) throw new InvalidOperationException("User not found or unauthorized");
 
-        var userSettings = user.UserSettings == null
-            ? new UserSettings()
+        if (user.UserSettings == null)
+        {
+            var userSettings = new UserSettings()
             {
-                UserId = user.Id
-            }
-            : await _unitOfWork.Repository<UserSettings>().GetByIdAsync(user.UserSettings.Id);
-
-        userSettings.SelectedAiType = newUserSettings.AiType;
-
-        _unitOfWork.Repository<UserSettings>().Update(userSettings);
+                UserId = user.Id,
+                SelectedAiType = newUserSettings.AiType
+            };
+            _unitOfWork.Repository<UserSettings>().Add(userSettings);
+        }
+        else
+        {
+            var userSettings = await _unitOfWork.Repository<UserSettings>().GetByIdAsync(user.UserSettings.Id);
+            userSettings.SelectedAiType = newUserSettings.AiType;
+            _unitOfWork.Repository<UserSettings>().Update(userSettings);
+        }
 
         var result = await _unitOfWork.Complete();
         if (result >= 0) return newUserSettings;
