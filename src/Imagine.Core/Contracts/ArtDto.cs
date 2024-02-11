@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Imagine.Core.Entities;
 
 namespace Imagine.Core.Contracts;
@@ -15,7 +16,9 @@ public record ArtDto : IValidatableObject
     
     public string User { get; set; }
     [Required] public ArtType ArtType { get; set; }
-    [Required] public JsonNode ArtSetting { get; set; }
+    [Required]
+    [JsonPropertyName("parameters")]
+    public JsonNode ArtSetting { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
