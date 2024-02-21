@@ -19,6 +19,7 @@ public class AiTask
             // OnUpdated?.Invoke(this);
         }
     }
-    public double Progress { get; set; }
-    public double RelativeEstimation { get; set; }
+    public double? Progress { get; set; }
+    public double? RelativeEstimation { get; set; }
+    public bool Completed { get; set; }
 }

@@ -31,6 +31,7 @@ public class ProgressController : BaseApiController
         }
         if (aiTask.Status == AiTaskStatus.Completed)
         {
+            aiTask.Completed = true;
             return Ok(aiTask);
         }
 
@@ -63,6 +64,7 @@ public class ProgressController : BaseApiController
 
             aiTask.Progress = sdProgressResponse.Progress;
             aiTask.RelativeEstimation = sdProgressResponse.Eta;
+            aiTask.Completed = sdProgressResponse.Completed;
 
             return Ok(aiTask);
         }

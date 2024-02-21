@@ -12,9 +12,9 @@ public record SdTaskProgressDto
     [JsonPropertyName("completed")]
     public bool Completed { get; set; }
     [JsonPropertyName("progress")]
-    public double Progress { get; set; }
+    public double? Progress { get; set; }
     [JsonPropertyName("eta")]
-    public double Eta { get; set; }
+    public double? Eta { get; set; }
     [JsonPropertyName("live_preview")]
     public string LivePreview { get; set; }
     [JsonPropertyName("id_live_preview")]
