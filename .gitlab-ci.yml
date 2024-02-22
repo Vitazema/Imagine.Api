@@ -22,7 +22,7 @@ workflow:
 variables:
   OUTPUT_FOLDER: "storage"
   PROJECT_FOLDER: "/home/zema/imagine"
-  API_WAN_URL: "http://api.aiexpression.net"
+  API_WAN_URL: "https://api.aiexpression.net"
   IMAGE_NAME: "imagine-api"
   APP_VERSION: "0.1.0"
 
