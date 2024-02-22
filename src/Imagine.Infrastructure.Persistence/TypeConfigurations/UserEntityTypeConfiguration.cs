@@ -1,5 +1,4 @@
-﻿using Imagine.Core.Entities;
-using Imagine.Core.Entities.Identity;
+﻿using Imagine.Core.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

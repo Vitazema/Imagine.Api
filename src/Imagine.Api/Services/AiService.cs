@@ -1,7 +1,5 @@
 ﻿using Imagine.Core.Configurations;
-using Imagine.Core.Models;
 using Imagine.Core.Specifications;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 
 namespace Imagine.Api.Services;
@@ -65,7 +63,7 @@ public class AiService : IAiService
     {
         // Inject SD queue api callback
         art.WorkerId = await _workerPool.NextWorker();
-        art.SetArtSetting("callback_url", $"{_appSettings.HostAddress}/progress/callback");
+        art.SetArtSetting("callback_url", $"{_appSettings.LanAddress}/progress/callback");
         art.SetArtSetting("steps", "25");
         art.SetArtSetting("negative_prompt", "ugly blurry text");
 

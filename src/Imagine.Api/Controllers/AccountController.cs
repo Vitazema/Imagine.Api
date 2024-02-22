@@ -1,5 +1,4 @@
-﻿using Imagine.Api.Helpers;
-using Imagine.Auth.Extensions;
+﻿using Imagine.Auth.Extensions;
 using Imagine.Auth.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

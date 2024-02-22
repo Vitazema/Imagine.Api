@@ -9,7 +9,6 @@ using Imagine.Core.Interfaces;
 using Imagine.Core.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Imagine.Auth.Repository;
 

@@ -4,7 +4,8 @@ namespace Imagine.Core.Configurations;
 
 public class AppSettings
 {
-    public string HostAddress { get; set; }
+    public string WanAddress { get; set; }
+    public string LanAddress { get; set; }
     /// <summary>
     /// Thread safe stored value for ExecutionDirectory
     /// </summary>

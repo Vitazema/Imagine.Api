@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Imagine.Api.Services;
 using Imagine.Auth.Repository;
 using Imagine.Core.Utilities;

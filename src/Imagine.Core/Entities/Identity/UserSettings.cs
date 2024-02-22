@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Imagine.Core.Entities.Identity;
+﻿namespace Imagine.Core.Entities.Identity;
 
 public class UserSettings : BaseEntity
 {
