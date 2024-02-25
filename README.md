@@ -42,6 +42,7 @@ To generate an image, send a POST request to `/arts` with a JSON payload specify
 "prompt": "Describe the image you want to generate",
 "parameters": {...}
 }
+```
 
 The API will process the request and return a link to the generated image.
 
