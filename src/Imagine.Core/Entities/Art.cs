@@ -13,6 +13,8 @@ public class Art : BaseEntity
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ArtType Type { get; set; }
     public int WorkerId { get; set; }
+    public int Rating { get; set; }
+    public bool IsFavorite { get; set; }
     public string ArtSetting { get; set; }
     public void SetArtSetting(string key, string value)
     {

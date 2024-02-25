@@ -9,17 +9,17 @@ using Microsoft.Extensions.FileProviders;
 using Serilog;
 using StackExchange.Redis;
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
-{
-    Args = args,
-    ApplicationName = typeof(Program).Assembly.FullName
-});
-
-LoggingConfiguration.Configure(builder.Configuration);
-builder.Host.UseSerilog();
-
 try
 {
+    var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
+    {
+        Args = args,
+        ApplicationName = typeof(Program).Assembly.FullName
+    });
+
+    LoggingConfiguration.Configure(builder.Configuration);
+    builder.Host.UseSerilog();
+
     builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
     builder.Services.Configure<WorkersSettings>(builder.Configuration.GetSection(nameof(WorkersSettings)));
     builder.Services.AddControllers(
@@ -121,7 +121,7 @@ try
 
     app.Run();
 }
-catch (Exception e)
+catch (Exception e) when (e is not HostAbortedException)
 {
     Log.Fatal(e, "Host terminated unexpectedly");
 }

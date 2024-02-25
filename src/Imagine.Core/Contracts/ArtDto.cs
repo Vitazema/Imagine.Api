@@ -12,6 +12,9 @@ public record ArtDto : IValidatableObject
     public Guid TaskId { get; set; }
     public string Title { get; set; }
     public List<string> Urls { get; set; }
+    public int Rating { get; set; }
+    [JsonPropertyName("favorite")]
+    public bool IsFavorite { get; set; }
     public DateTime CreatedAt { get; set; }
     
     public string User { get; set; }

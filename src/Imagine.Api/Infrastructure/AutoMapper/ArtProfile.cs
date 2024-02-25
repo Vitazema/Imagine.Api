@@ -7,7 +7,6 @@ public sealed class ArtProfile : Profile
     public ArtProfile()
     {
         CreateMap<Art, ArtDto>()
-            .ForMember(a => a.Id, o => o.MapFrom(u => u.Id))
             .ForMember(a => a.User, o => o.MapFrom(u => u.User.UserName))
             .ForMember(a => a.Urls, o => o.MapFrom<ArtUrlResolver>())
             .ForMember(a => a.ArtSetting, o => o.MapFrom(a => StringToJson.SerializeArtSetting(a.ArtSetting)));

@@ -113,6 +113,34 @@ public class ArtsController : BaseApiController
         return Ok(updatedArt);
     }
 
+    [HttpPut("{id:Guid}/rate/{rate:int}")]
+    public async Task<ActionResult<ArtDto>> RateArt(Guid id, int rate)
+    {
+        var art = await _artsRepository.GetByIdAsync(id);
+        if (art == null)
+        {
+            return NotFound(new ApiResponse(404, $"Art {id} not found"));
+        }
+
+        art.Rating = rate;
+        var updatedArt = await _artsRepository.UpdateAsync(art);
+        return Ok(_mapper.Map<Art, ArtDto>(updatedArt));
+    }
+    
+    [HttpPut("{id:Guid}/favorite")]
+    public async Task<ActionResult<ArtDto>> FavoriteArt(Guid id)
+    {
+        var art = await _artsRepository.GetByIdAsync(id);
+        if (art == null)
+        {
+            return NotFound(new ApiResponse(404, $"Art {id} not found"));
+        }
+
+        art.IsFavorite = !art.IsFavorite;
+        var updatedArt = await _artsRepository.UpdateAsync(art);
+        return Ok(_mapper.Map<Art, ArtDto>(updatedArt));
+    }
+
     // [Authorize]
     [HttpDelete("{id:Guid}")]
     public async Task<ActionResult<ArtDto>> DeleteArt(Guid id)
