@@ -10,11 +10,11 @@ public interface IUserRepository
     Task<User?> GetUserAsync(string? userName);
     Task<User?> GetUserByIdAsync(string? userId);
     Task<UserDto?> Login(UserCredentials credentials);
-    Task<ActionResult<UserDto?>> Register(RegisterDto registerInfo);
     Task<User?> GetCurrentUserAsync(ClaimsPrincipal user);
     Task<UserSettings?> GetCurrentUserSettingsAsync(ClaimsPrincipal user);
     Task<UserSettingsDto> UpdateUserSettingsAsync(ClaimsPrincipal userPrincipal, UserSettingsDto newUserSettings);
     Task<bool> CheckEmailExistsAsync(string email);
     Task<bool> CheckUserNameExistsAsync(string userName);
     Task<UserDto> UpdateEmailAsync(ClaimsPrincipal userPrincipal, string newEmail);
+    Task<ActionResult<UserDto?>> Register(RegisterDto registerInfo, bool isGuest = false);
 }

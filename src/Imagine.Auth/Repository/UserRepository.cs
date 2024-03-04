@@ -34,6 +34,7 @@ public class UserRepository : IUserRepository
         _tokenService = tokenService;
     }
 
+
     public async Task<User?> GetCurrentUserAsync(ClaimsPrincipal user)
     {
         var userName = user.GetUserNameFromPrincipal();
@@ -85,21 +86,26 @@ public class UserRepository : IUserRepository
         return userDto;
     }
 
-    public async Task<ActionResult<UserDto?>> Register(RegisterDto registerInfo)
+    public async Task<ActionResult<UserDto?>> Register(RegisterDto registerInfo, bool isGuest = false)
     {
-        if (CheckUserNameExistsAsync(registerInfo.UserName).Result)
-            return new BadRequestObjectResult(new ApiValidationErrorResponse
-            {
-                Errors = new[]
-                    { "User name already exists" }
-            });
+        IdentityResult result;
+        
+        if (!isGuest)
+        {
+            if (CheckUserNameExistsAsync(registerInfo.UserName).Result)
+                return new BadRequestObjectResult(new ApiValidationErrorResponse
+                {
+                    Errors = new[]
+                        { "User name already exists" }
+                });
 
-        if (CheckEmailExistsAsync(registerInfo.Email).Result)
-            return new BadRequestObjectResult(new ApiValidationErrorResponse
-            {
-                Errors = new[]
-                    { "Email already exists" }
-            });
+            if (CheckEmailExistsAsync(registerInfo.Email).Result)
+                return new BadRequestObjectResult(new ApiValidationErrorResponse
+                {
+                    Errors = new[]
+                        { "Email already exists" }
+                });
+        }
 
         var newUser = new User()
         {
@@ -108,9 +114,7 @@ public class UserRepository : IUserRepository
             Role = Role.Free
         };
 
-        IdentityResult result;
-
-        if (registerInfo.Password.Length > 0)
+        if (registerInfo.Password is { Length: > 0 })
             result = await _userManager.CreateAsync(newUser, registerInfo.Password);
         else
             result = await _userManager.CreateAsync(newUser);

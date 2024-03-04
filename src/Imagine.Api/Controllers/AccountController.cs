@@ -101,6 +101,18 @@ public class AccountController : BaseApiController
         return Ok(user);
     }
     
+    [HttpPost("generate")]
+    public async Task<ActionResult<UserDto>> GenerateUser()
+    {
+        var user = await _userRepository.Register(
+            new RegisterDto()
+            {
+                UserName = "Guest" + Random.Shared.Next(100000, 999999),
+            }, true);
+        if (user.Value == null) return user.Result;
+        return Ok(user.Value);
+    }
+    
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerInfo)
     {
