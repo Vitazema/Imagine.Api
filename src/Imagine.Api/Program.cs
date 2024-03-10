@@ -6,6 +6,7 @@ using Imagine.Core.Configurations;
 using Imagine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using Serilog;
 using StackExchange.Redis;
 
@@ -21,6 +22,7 @@ try
     builder.Host.UseSerilog();
 
     builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
+    builder.Services.AddSingleton(config => config.GetRequiredService<IOptions<AppSettings>>().Value);
     builder.Services.Configure<WorkersSettings>(builder.Configuration.GetSection(nameof(WorkersSettings)));
     builder.Services.AddControllers(
         // Todo: cause duplication controller calls
@@ -42,7 +44,7 @@ try
     builder.Services.AddIdentityServices(builder.Configuration);
     builder.Services.AddApplicationServices(builder.Configuration);
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddSwaggerDocumentation();
 
     builder.Services.AddCustomAutoMapper();
@@ -56,10 +58,10 @@ try
         .AllowAnyOrigin()
     ));
 
-// if (builder.Environment.IsDevelopment())
-// {
-//     builder.Services.AddDirectoryBrowser();
-// }
+    // if (builder.Environment.IsDevelopment())
+    // {
+    //     builder.Services.AddDirectoryBrowser();
+    // }
 
     var app = builder.Build();
     AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -71,17 +73,18 @@ try
         app.UseSwaggerDocumentation();
         // app.UseDeveloperExceptionPage();
     }
-// else
-// {
-// app.UseExceptionHandler("/Error");
+    // else
+    // {
+    // app.UseExceptionHandler("/Error");
 
-// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-// app.UseHsts();
-// }
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // app.UseHsts();
+    // }
 
 
-// # If the app calls UseStaticFiles, place UseStaticFiles before UseRouting.
-    var storageDir = app.Configuration.GetSection(nameof(AppSettings)).Get<AppSettings>().StorageDir;
+    // # If the app calls UseStaticFiles, place UseStaticFiles before UseRouting.
+
+    var storageDir = app.Services.GetRequiredService<IOptions<AppSettings>>().Value.StorageDir;
 
     if (storageDir == null) throw new Exception("Cannot get storage directory");
     if (!Path.Exists(storageDir))
@@ -96,21 +99,21 @@ try
         EnableDirectoryBrowsing = true
     });
 
-// If the app uses CORS scenarios, such as [EnableCors], place the call to UseCors before any other middleware that use CORS (for example, place UseCors before UseAuthentication, UseAuthorization, and UseEndpoints).
+    // If the app uses CORS scenarios, such as [EnableCors], place the call to UseCors before any other middleware that use CORS (for example, place UseCors before UseAuthentication, UseAuthorization, and UseEndpoints).
     app.UseCors();
 
-// Calling UseAuthentication and UseAuthorization adds the authentication and authorization
-// middleware. These middleware are placed between UseRouting and UseEndpoints so that they can:
-// See which endpoint was selected by UseRouting.
-//     Apply an authorization policy before UseEndpoints dispatches to the endpoint.
+    // Calling UseAuthentication and UseAuthorization adds the authentication and authorization
+    // middleware. These middleware are placed between UseRouting and UseEndpoints so that they can:
+    // See which endpoint was selected by UseRouting.
+    //     Apply an authorization policy before UseEndpoints dispatches to the endpoint.
     app.UseAuthentication();
     app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
+    // Configure the HTTP request pipeline.
     app.UseMiddleware<ExceptionMiddleware>();
 
-// Add endpoints for error handling. Redirects to errors controller.
-// app.UseStatusCodePagesWithReExecute("/errors/{0}");
+    // Add endpoints for error handling. Redirects to errors controller.
+    // app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 
     app.MapHealthChecks("/healthz", new HealthCheckOptions()
