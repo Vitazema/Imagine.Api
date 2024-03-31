@@ -64,7 +64,9 @@ try
     // }
 
     var app = builder.Build();
-    AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+    
+    // Cause incorrect Timestamp in db, but OK client output time
+    // AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
     app.DbInitialize();
 

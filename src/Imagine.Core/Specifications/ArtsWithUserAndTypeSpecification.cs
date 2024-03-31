@@ -13,7 +13,6 @@ public class ArtsWithUserAndTypeSpecification : BaseSpecification<Art>
         )
     {
         AddInclude(x => x.User);
-        AddOrderBy(x => x.CreatedAt);
         ApplyPagination(artRequest.PageSize * (artRequest.PageIndex - 1), artRequest.PageSize);
         
         if (!string.IsNullOrEmpty(artRequest.Sort))

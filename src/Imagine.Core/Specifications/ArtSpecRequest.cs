@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Core.Specifications;
 
-public class ArtSpecRequest
+public record ArtSpecRequest
 {
     private const int MaxPageSize = 50;
     [FromQuery(Name = "page")]
