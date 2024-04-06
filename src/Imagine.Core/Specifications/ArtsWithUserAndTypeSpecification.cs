@@ -8,7 +8,7 @@ public class ArtsWithUserAndTypeSpecification : BaseSpecification<Art>
         : base(x =>
             (string.IsNullOrEmpty(artRequest.Search) || x.ArtSetting.ToLower()
                 .Contains(artRequest.Search)) &&
-            (!artRequest.UserId.HasValue || x.User.Id.ToString() == artRequest.UserId.ToString()) &&
+            (artRequest.User.UserName == "System" || x.User.Id == artRequest.User.Id) &&
             (!artRequest.ArtType.HasValue || x.Type == artRequest.ArtType)
         )
     {

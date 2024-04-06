@@ -48,6 +48,15 @@ public class ArtsController : BaseApiController
     {
         var specification = new ArtsWithUserAndTypeSpecification(artRequest);
 
+        var user = await _usersRepository.GetCurrentUserAsync(User);
+        if (user == null)
+        {
+            return BadRequest(new ApiResponse(400, $"Current user not found, please login."));
+        }
+
+        artRequest.User = user;
+        
+        // Todo: DB request duplication
         var countSpecification = new ArtWithFiltersForCountSpecification(artRequest);
         var totalArts = await _artsRepository.CountAsync(countSpecification);
 

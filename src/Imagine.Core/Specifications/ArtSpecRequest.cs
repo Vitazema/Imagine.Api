@@ -1,4 +1,5 @@
 ﻿using Imagine.Core.Entities;
+using Imagine.Core.Entities.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imagine.Core.Specifications;
@@ -19,7 +20,7 @@ public record ArtSpecRequest
     }
     
     public ArtType? ArtType { get; set; }
-    public int? UserId { get; set; }
+    public User User { get; set; }
     public string Sort { get; set; }
 
     public string Search
