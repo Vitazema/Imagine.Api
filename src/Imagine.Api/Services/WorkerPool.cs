@@ -7,16 +7,20 @@ public class WorkerPool : IWorkerPool
 {
     private readonly IOptions<WorkersSettings> _workerSettings;
 
+     private static Queue<StableDiffusionWorker> workers = new();
+
     public WorkerPool(IOptions<WorkersSettings> workerSettings)
     {
         _workerSettings = workerSettings;
+        workerSettings.Value.StableDiffusionWorkers.ForEach(w => workers.Enqueue(w));
     }
 
     public async Task<int> NextWorker()
     {
-        var workerId = _workerSettings.Value.StableDiffusionWorkers.FirstOrDefault()?.Id;
-        if (workerId is null) throw new Exception("No workers available");
-        return workerId.Value;
+        var worker = workers.Dequeue();
+        if (worker == null) throw new Exception("No workers available");
+        workers.Enqueue(worker);
+        return worker.Id;
     }
 
     public async Task<int> GetWorkerId(Guid taskId)
@@ -35,7 +39,7 @@ public class WorkerPool : IWorkerPool
 
     public StableDiffusionWorker GetWorkerById(int id)
     {
-        return _workerSettings.Value.StableDiffusionWorkers.FirstOrDefault(x => x.Id == id) ??
+        return workers.FirstOrDefault(x => x.Id == id) ??
                throw new Exception($"Error getting worker by id: {id}");
     }
 }

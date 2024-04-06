@@ -25,7 +25,7 @@ public static class AppServicesExtensions
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         services.AddSingleton<ITaskProgressService, TaskProgressService>();
-        services.AddScoped<IWorkerPool, WorkerPool>();
+        services.AddSingleton<IWorkerPool, WorkerPool>();
         services.AddScoped<IAiApiService, StableDiffusionQueueApiService>();
         services.AddScoped<IAiService, AiService>();
         // services.AddSingleton<IBackgroundTaskQueue>(_ => new AiBackgroundTaskQueue(
